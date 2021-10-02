@@ -1,1 +1,1 @@
-# A web application for conduct online quizzes 
+# A web application for conducting online quizzes 
