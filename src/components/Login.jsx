@@ -36,7 +36,7 @@ export default function Login(){
                 // var credential = result.credential;
                 // var token = credential.accessToken;
                 var user = result.user;
-                firebaseApp.firestore().collection("Users").doc(user.email).set({
+                firebaseApp.firestore().collection("Users").doc(user.email).update({
                     firstName: user.displayName.split(" ")[0],
                     lastName: user.displayName.split(" ")[1],
                     email:user.email,
