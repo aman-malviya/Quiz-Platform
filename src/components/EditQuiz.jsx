@@ -194,32 +194,32 @@ function EditQuiz() {
                                     <br />  
                                     <label><strong>Quiz Name</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
-                                        <input value={quizName} onChange={(e)=>setQuizName(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Your Name" />   
+                                        <input value={quizName} onChange={(e)=>setQuizName(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Name of the Quiz" />   
                                     </div>
                                     <br />
                                     <label><strong>Date</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
-                                        <input value={date} onChange={(e)=>setDate(e.target.value)} type="date" className="form-control border-0 py-2 px-4" placeholder="Enter Your Email" />   
+                                        <input value={date} onChange={(e)=>setDate(e.target.value)} type="date" className="form-control border-0 py-2 px-4" placeholder="Date of the Quiz" />   
                                     </div>
                                     <br />
                                     <label><strong>Start Time</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
-                                        <input value={startTime} onChange={(e)=>setStartTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Enter Your Mobile Number" />   
+                                        <input value={startTime} onChange={(e)=>setStartTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Quiz starts at" />   
                                     </div>
                                     <br />
                                     <label><strong>End Time</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
-                                        <input value={endTime} onChange={(e)=>setEndTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Enter the Name of Current College" />   
+                                        <input value={endTime} onChange={(e)=>setEndTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Quiz ends at" />   
                                     </div>
                                     <br />
                                     <label><strong>Duration (in minutes)</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
-                                        <input value={time} onChange={(e)=>setTime(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Enter the Name of Current College" />   
+                                        <input value={time} onChange={(e)=>setTime(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Duration of the Quiz" />   
                                     </div>
                                     <br />
                                     <label><strong>Number of Questions</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
-                                        <input value={noOfQues} onChange={(e)=>setNoOfQues(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Enter the Name of Current College" />   
+                                        <input value={noOfQues} onChange={(e)=>setNoOfQues(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Number of Questions" />   
                                     </div>
                                     <br />
                                     <button onClick={saveQuiz} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">Save</button>
