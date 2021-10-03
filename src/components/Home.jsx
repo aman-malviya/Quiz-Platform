@@ -84,7 +84,6 @@ function Home(props) {
   const {currentUser} =useAuth()
   const [option, setoption] = useState("dashboard")
   const [loading, setloading] = useState(true)
-  const [displayCreate, setDisplayCreate]=useState(false)
   const [profile, setprofile] = useState(false)
 
   const handleLogout=(e)=>{
@@ -112,15 +111,6 @@ function Home(props) {
           handleDrawerToggle()
         }
       }
-    const toCreate=(e)=>{
-      e.preventDefault();
-      setoption("create");
-      Array.from(document.getElementsByClassName("icon")).forEach(ic=>ic.classList.remove("active-icon"))
-      document.getElementById("create").classList.add("active-icon");
-        if(width<760){
-          handleDrawerToggle()
-        }
-    }
     const toProfile=(e)=>{
       e.preventDefault();
       setoption("profile");
@@ -136,11 +126,6 @@ function Home(props) {
     }, 2000);
 
     useEffect(()=>{
-      firebaseApp.firestore().collection("Organizers").doc(currentUser.email).get().then(doc=>{
-        if(doc.exists){
-          setDisplayCreate(true);
-        }
-      })
       firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
         if(doc.data().completed){
           setprofile(true);
@@ -163,8 +148,6 @@ function Home(props) {
             <button onClick={toProfile} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="profile" class="fal fa-user-circle icon"></i> Profile</button>
             {profile?<button onClick={toDashboard} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="dashboard" class="fas fa-th-large icon active-icon"></i> Dashboard</button>:null}
             {profile?<button onClick={toEvents} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="events" class="fal fa-broadcast-tower icon"></i> Quizzes</button>:null}
-            {profile?displayCreate?<button onClick={toCreate} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id='create' class="far fa-plus-hexagon icon"></i> New Event</button>:null:null}
-            {/*<button className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i class="fas fa-adjust icon"></i> Dark Mode</button>*/}
             <button className="accent btn d-block w-100 rounded-0 my-3 text-start p-0" onClick={handleLogout}><i class="icon far fa-sign-out"></i> Logout</button>
         </div>
       </div>
@@ -216,7 +199,7 @@ function Home(props) {
                 >
                 <MenuIcon />
             </IconButton>
-            {option==="dashboard"?<Dashboard user={currentUser} />:option==="events"?<Events />:option==="profile"?<Profile />:<CreateNewEvent user={currentUser} />}
+            {option==="dashboard"?<Dashboard user={currentUser} />:option==="events"?<Events />:option==="profile"?<Profile />:null}
         </div>
       </main>
     </div>

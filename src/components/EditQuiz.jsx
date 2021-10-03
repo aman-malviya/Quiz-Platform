@@ -152,6 +152,20 @@ function EditQuiz() {
             handleClose();
         })
     }
+    const newQuestion=()=>{
+        setflag(false)
+        setQuestion("")
+        setA("")
+        setB("")
+        setC("")
+        setD("")
+        setAns("")
+        firebaseApp.firestore().collection("Quizzes").doc(quizID).collection("Questions").doc().set({
+            question:"Untitled"
+        }).then(()=>{
+            setrefetch(!refetch);
+        })
+    }
 
     return (
         <div className="p-5">
@@ -215,7 +229,7 @@ function EditQuiz() {
                                 <div>
                                     <br />
                                     <div className='d-flex justify-content-between w-100'>
-                                        <h5 id="transition-modal-title">Question</h5>
+                                        <h5 id="transition-modal-title">Question {index+1}</h5>
                                         <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
                                     </div>
                                     <br />  
@@ -307,6 +321,7 @@ function EditQuiz() {
                             <div className="p-5 box-shadow-card rounded-3">{q.Question}</div> 
                         </div>
                     })}
+                    <button onClick={newQuestion} style={{'width':'auto', 'right':'0', 'bottom':'0', 'backgroundColor':'#0d1842'}} className="position-fixed btn m-5 rounded-pill box-shadow-card text-white px-5 py-2">Add a question</button>
                 </div>
             </div>
         </div>
