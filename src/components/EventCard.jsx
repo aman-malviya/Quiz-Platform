@@ -9,16 +9,9 @@ export default function EventCard(props){
         history.push("/quiz/"+props.id);
     }
 
-    const [URL, setURL] = useState("")
-    useEffect(()=>{
-        firebaseApp.storage().ref().child('images/'+props.id).getDownloadURL().then(url=>{
-            setURL(url)
-        })
-    },[])
-
     return(
         <div style={{'backgroundColor':'#fbfdff'}} class="card shadow-lg mb-4">
-            <div style={{'background':'url("'+URL+'")'}} className="sideImg">
+            <div style={{'background':'url("'+props.banner+'")'}} className="sideImg">
                 <div className="blue py-5 w-100">
                 <br /><br /><br /><br />
                 <div className="d-flex justify-content-center">

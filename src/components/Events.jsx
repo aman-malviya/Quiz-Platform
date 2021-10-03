@@ -29,7 +29,7 @@ export default function Events(){
                     return null;
                 }   
                 return <div className="col-lg-4">
-                    <EventCard id={quiz.id} title={quiz.doc.quizName} date={quiz.doc.date} duration={quiz.doc.timeDuration} start={quiz.doc.startTime} end={quiz.doc.endTime} noOfQues={quiz.doc.noOfQues} />
+                    <EventCard id={quiz.id} title={quiz.doc.quizName} date={quiz.doc.date} duration={quiz.doc.timeDuration} start={quiz.doc.startTime} end={quiz.doc.endTime} noOfQues={quiz.doc.noOfQues} banner={quiz.doc.banner} />
                 </div>        
             })}
         </div>

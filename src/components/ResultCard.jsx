@@ -75,13 +75,6 @@ export default function ResultCard(props){
         })
     }
 
-    const [URL, setURL] = useState("")
-    useEffect(()=>{
-        firebaseApp.storage().ref().child('images/'+props.id).getDownloadURL().then(url=>{
-            setURL(url)
-        })
-    },[])
-
     //Modal
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -163,7 +156,7 @@ export default function ResultCard(props){
                     </Fade>
                 </Modal>
             </div>
-            <div style={{'background':'url("'+URL+'")', 'borderRadius':'10px'}} className="sideImg box-shadow-card">
+            <div style={{'background':'url("'+props.banner+'")', 'borderRadius':'10px'}} className="sideImg box-shadow-card">
                 <div style={{'borderRadius':'10px'}} className="blue py-2 w-100">
                     <br /><br /><br /><br />
                     <br /><br /><br /><br />

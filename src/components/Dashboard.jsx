@@ -57,7 +57,7 @@ export default function Dashboard(props){
                 <div className="row no-gutters">
                     {quizzesOrganized.map(quiz=>{
                         return <div className="col-lg-6">
-                            <ResultCard id={quiz[0]} title={quiz[1].quizName} />
+                            <ResultCard id={quiz[0]} title={quiz[1].quizName} banner={quiz[1].banner} />
                         </div>
                     })}
                 </div>

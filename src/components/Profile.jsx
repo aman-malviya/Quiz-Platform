@@ -36,6 +36,7 @@ function Profile() {
     const [city, setcity] = useState("")
     const [save, setsave] = useState(false)
     const [currentUser, setcurrentUser] = useState({})
+    const [photo, setphoto] = useState("")
     useEffect(()=>{
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).get().then(doc=>{
             setname(doc.data().firstName+" "+doc.data().lastName)
@@ -45,6 +46,7 @@ function Profile() {
             setstate(doc.data().state)
             setcity(doc.data().city)
             setcountry(doc.data().country)
+            setphoto(doc.data().photoURL)
             let temp={
                 name:doc.data().firstName+" "+doc.data().lastName,
                 email:doc.data().email,
@@ -53,7 +55,7 @@ function Profile() {
                 city:doc.data().city,
                 state:doc.data().state,
                 country:doc.data().country,
-                college:doc.data().college
+                college:doc.data().college,
             }
             setcurrentUser(temp);
         })
@@ -73,6 +75,10 @@ function Profile() {
     };
 
     const updateProfile=(e)=>{
+        let img=document.getElementById("image-input").files[0]
+        if(img){
+            updateImage(img)
+        }
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).update({
             name:name,
             email:email,
@@ -83,12 +89,26 @@ function Profile() {
             country:country,
             completed:true
         }).then(()=>{
-            setsave(true)
+            setsave(!save)
             handleClose()
             window.location.reload()
         })
     }
-
+    const updateImage=(img)=>{
+        var metadata={
+            contentType:img.type,
+        }
+        firebaseApp.storage().ref().child("profiles/"+email).put(img, metadata)        
+        .then((snap)=>{
+            firebaseApp.storage().ref().child("profiles/"+email).getDownloadURL().then(url=>{
+                firebaseApp.firestore().collection('Users').doc(email).update({
+                    photoURL:url
+                }).then(()=>{
+                    setsave(!save)
+                })
+            })
+        })
+    }
     return (
         <div>
             <h1 className="mb-5">{currentUser.completed?"Profile":"Complete Your Profile"}</h1>
@@ -121,6 +141,11 @@ function Profile() {
                             <label><strong>Email</strong></label>
                             <div class="input-group my-2 shadow rounded-2">
                                 <input disabled value={email} onChange={(e)=>setemail(e.target.value)} type="email" className="form-control border-0 py-2 px-4" placeholder="Enter Your Email" />   
+                            </div>
+                            <br />
+                            <label><strong>Profile Picture</strong></label>
+                            <div class="input-group my-2 shadow rounded-2">
+                                <input id="image-input" type="file" className="form-control border-0 py-2 px-4" />   
                             </div>
                             <br />
                             <label><strong>Mobile Number</strong></label>
@@ -167,7 +192,9 @@ function Profile() {
             </Modal>
             <div className="bg-white p-5 rounded-3 box-shadow-card position-relative">
                 <i onClick={handleOpen} class="fal fa-pen fs-5 edit-icon p-5"></i>
-                <img alt="Profile" className="rounded-circle mb-4 box-shadow-card" src={user.currentUser.photoURL} height="120px" width="120px" />
+                <div style={{'height':'120px', 'width':'120px'}}>
+                    <img alt="Profile" style={{'objectFit':'cover'}} className="rounded-circle mb-4 box-shadow-card w-100 h-100" src={photo} />         
+                </div>
                 <h2 className="profile-name">{currentUser.name}</h2>
                 <br />
                 <br />

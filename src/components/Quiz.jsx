@@ -21,9 +21,6 @@ function Quiz() {
         firebaseApp.firestore().collection("Quizzes").doc(id).get().then(doc=>{
             setCurrentQuiz(doc.data())
         })
-        firebaseApp.storage().ref().child('images/'+id).getDownloadURL().then(url=>{
-            setURL(url)
-        })
         firebaseApp.firestore().collection('Quizzes/'+id+'/Questions').get().then(docs=>{
           let temp=[]
           docs.forEach(doc=>{
@@ -124,7 +121,7 @@ function Quiz() {
             </div>
             {/*Appbar*/}
 
-            <div style={{'background':'url("'+URL+'")'}} className="sideImg position-relative">
+            <div style={{'background':'url("'+currentQuiz.banner+'")'}} className="sideImg position-relative">
                 <div className="blue d-flex justify-content-center align-items-center text-white p-5 pb-0">
                     <div>
                         <p style={{'fontSize':'0.9rem', 'opacity':'0.75'}} className="text-center">Question {index+1}/{totalQues}</p>

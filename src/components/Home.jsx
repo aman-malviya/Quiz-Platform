@@ -85,6 +85,7 @@ function Home(props) {
   const [option, setoption] = useState("dashboard")
   const [loading, setloading] = useState(true)
   const [profile, setprofile] = useState(false)
+  const [photo, setphoto] = useState("")
 
   const handleLogout=(e)=>{
       firebaseApp.auth().signOut().then(() => {
@@ -127,6 +128,7 @@ function Home(props) {
 
     useEffect(()=>{
       firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
+        setphoto(doc.data().photoURL)
         if(doc.data().completed){
           setprofile(true);
         }else{
@@ -141,7 +143,7 @@ function Home(props) {
       <div>
         <div style={{'backgroundColor':'#f9f9fb'}} className="min-vh-100 py-5 shadow-lg dashboard-nav position-relative">
             <div className="profile-icon d-flex justify-content-center pb-3">
-                <img className="rounded-circle my-border shadow-lg" src={currentUser&&currentUser.photoURL?currentUser.photoURL:"man.png"} alt="profile-icon" height="100px" width="100px" />
+                <img className="rounded-circle my-border shadow-lg" src={photo?photo:"man.png"} alt="profile-icon" height="100px" width="100px" />
             </div>
             <h5 className="text-center mb-2">{currentUser.displayName}</h5>
             <p style={{'fontSize':'0.7rem'}} className="text-center mb-5 px-1">{currentUser.email}</p>

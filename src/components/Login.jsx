@@ -33,16 +33,19 @@ export default function Login(){
         firebaseApp.auth()
             .signInWithPopup(googleProvider)
             .then((result) => {
-                // var credential = result.credential;
-                // var token = credential.accessToken;
                 var user = result.user;
-                firebaseApp.firestore().collection("Users").doc(user.email).update({
-                    firstName: user.displayName.split(" ")[0],
-                    lastName: user.displayName.split(" ")[1],
-                    email:user.email,
-                    photoURL:user.photoURL        
+                firebaseApp.firestore().collection("Users").doc(user.email).get().then(doc=>{
+                    if(!doc.exists){
+                        firebaseApp.firestore().collection("Users").doc(user.email).update({
+                            firstName: user.displayName.split(" ")[0],
+                            lastName: user.displayName.split(" ")[1],
+                            email:user.email,
+                            photoURL:user.photoURL        
+                        })
+                    }
+                }).then(()=>{
+                    history.push("/dashboard")
                 })
-                history.push("/dashboard")
             }).catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;

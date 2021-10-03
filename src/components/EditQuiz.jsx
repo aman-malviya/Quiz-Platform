@@ -122,6 +122,10 @@ function EditQuiz() {
         const startMinutes=startTime.split(":")[1];
         const endHours=endTime.split(":")[0];
         const endMinutes=endTime.split(":")[1];
+        let img=document.getElementById("quiz-banner").files[0]
+        if(img){
+            updateImage(img)
+        }
         firebaseApp.firestore().collection("Quizzes").doc(id).update({
             quizName:quizName,
             date:date,
@@ -166,6 +170,21 @@ function EditQuiz() {
             setrefetch(!refetch);
         })
     }
+    const updateImage=(img)=>{
+        var metadata={
+            contentType:img.type,
+        }
+        firebaseApp.storage().ref().child("Images/"+id).put(img, metadata)        
+        .then((snap)=>{
+            firebaseApp.storage().ref().child("Images/"+id).getDownloadURL().then(url=>{
+                firebaseApp.firestore().collection('Quizzes').doc(id).update({
+                    banner:url
+                }).then(()=>{
+                    setrefetch(!refetch)
+                })
+            })
+        })
+    }
 
     return (
         <div className="p-5">
@@ -195,6 +214,11 @@ function EditQuiz() {
                                     <label><strong>Quiz Name</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
                                         <input value={quizName} onChange={(e)=>setQuizName(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Name of the Quiz" />   
+                                    </div>
+                                    <br />
+                                    <label><strong>Quiz Banner</strong></label>
+                                    <div class="input-group my-2 shadow rounded-2">
+                                        <input id="quiz-banner" type="file" className="form-control border-0 py-2 px-4" />   
                                     </div>
                                     <br />
                                     <label><strong>Date</strong></label>
