@@ -108,7 +108,10 @@ function Profile() {
                     <Fade in={open}>
                         <div className={classes.paper}>
                             <br />
-                            <h5 id="transition-modal-title">Complete Your Profile</h5>
+                            <div className='d-flex justify-content-between w-100'>
+                                <h5 id="transition-modal-title">Complete Your Profile</h5>
+                                <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
+                            </div>
                             <br />  
                             <label><strong>Name</strong></label>
                             <div class="input-group my-2 shadow rounded-2">
@@ -159,7 +162,6 @@ function Profile() {
                             <br />
                             <button onClick={updateProfile} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">Save</button>
                             <br />
-                            <button className="btn w-100 p-0 m-0 fs-4" onClick={handleClose}><i class="fal fa-times-circle"></i></button>
                         </div>
                     </Fade>
             </Modal>

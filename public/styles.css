@@ -282,6 +282,7 @@ input::-webkit-inner-spin-button {
   font-family: 'Crimson Pro', serif;
 }
 .edit-icon{
+  width: auto !important;
   position: absolute;
   right: 0;
   top: 0;
