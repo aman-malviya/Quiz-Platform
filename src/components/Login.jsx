@@ -36,7 +36,7 @@ export default function Login(){
                 var user = result.user;
                 firebaseApp.firestore().collection("Users").doc(user.email).get().then(doc=>{
                     if(!doc.exists){
-                        firebaseApp.firestore().collection("Users").doc(user.email).update({
+                        firebaseApp.firestore().collection("Users").doc(user.email).set({
                             firstName: user.displayName.split(" ")[0],
                             lastName: user.displayName.split(" ")[1],
                             email:user.email,
