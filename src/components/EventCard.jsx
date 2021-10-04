@@ -10,7 +10,7 @@ export default function EventCard(props){
     }
 
     return(
-        <div style={{'backgroundColor':'#fbfdff'}} class="card shadow-lg mb-4">
+        <div style={{'backgroundColor':'#fbfdff'}} class="card box-shadow-card mb-4">
             <div style={{'background':'url("'+props.banner+'")'}} className="sideImg">
                 <div className="blue py-5 w-100">
                 <br /><br /><br /><br />

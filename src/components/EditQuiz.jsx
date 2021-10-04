@@ -74,7 +74,8 @@ function EditQuiz() {
                     OptionC:doc.data().C,
                     OptionD:doc.data().D,
                     CorrectOption:doc.data().ans,
-                    id:doc.id
+                    id:doc.id,
+                    Banner:doc.data().banner
                 })
             })
             temp.sort((a,b)=>{
@@ -123,9 +124,6 @@ function EditQuiz() {
         const endHours=endTime.split(":")[0];
         const endMinutes=endTime.split(":")[1];
         let img=document.getElementById("quiz-banner").files[0]
-        if(img){
-            updateImage(img)
-        }
         firebaseApp.firestore().collection("Quizzes").doc(id).update({
             quizName:quizName,
             date:date,
@@ -136,14 +134,19 @@ function EditQuiz() {
             timeStampEnd:new Date(year, month-1, day, endHours, endMinutes, 0, 0).getTime(),
             timeDuration:time
         }).then(()=>{
-            setrefetch(!refetch);
-            handleClose();
+            if(img){
+                updateQuizBanner(img)
+            }else{
+                setrefetch(!refetch)
+                handleClose()
+            }
         })
 
     }
     const saveQuestion=(e)=>{
         e.preventDefault();
         const qid=questions[index].id
+        const img=document.getElementById("question-image").files[0]
         firebaseApp.firestore().collection("Quizzes").doc(quizID).collection("Questions").doc(qid).update({
             question: question,
             A: a,
@@ -152,8 +155,12 @@ function EditQuiz() {
             D: d,
             ans:ans,
         }).then(()=>{
-            setrefetch(!refetch);
-            handleClose();
+            if(img){
+                updateQuestionImage(img,qid)
+            }else{
+                setrefetch(!refetch)
+                handleClose()
+            }
         })
     }
     const newQuestion=()=>{
@@ -170,22 +177,38 @@ function EditQuiz() {
             setrefetch(!refetch);
         })
     }
-    const updateImage=(img)=>{
+    const updateQuizBanner=(img)=>{
         var metadata={
             contentType:img.type,
         }
         firebaseApp.storage().ref().child("Images/"+id).put(img, metadata)        
         .then((snap)=>{
             firebaseApp.storage().ref().child("Images/"+id).getDownloadURL().then(url=>{
-                firebaseApp.firestore().collection('Quizzes').doc(id).update({
+                firebaseApp.firestore().collection("Quizzes").doc(id).update({
                     banner:url
                 }).then(()=>{
                     setrefetch(!refetch)
+                    handleClose()
                 })
             })
         })
     }
-
+    const updateQuestionImage=(img,qid)=>{
+        var metadata={
+            contentType:img.type,
+        }
+        firebaseApp.storage().ref().child("Images/"+qid).put(img, metadata)        
+        .then((snap)=>{
+            firebaseApp.storage().ref().child("Images/"+qid).getDownloadURL().then(url=>{
+                firebaseApp.firestore().collection("Quizzes/"+id+"/Questions").doc(qid).update({
+                    banner:url
+                }).then(()=>{
+                    setrefetch(!refetch)
+                    handleClose()
+                })
+            })
+        })
+    }
     return (
         <div className="p-5">
             {/*Modal*/}
@@ -262,6 +285,11 @@ function EditQuiz() {
                                         <input value={question} onChange={(e)=>setQuestion(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter the Question" />   
                                     </div>
                                     <br />
+                                    <label><strong>Attach an image (optional)</strong></label>
+                                    <div class="input-group my-2 shadow rounded-2">
+                                        <input id="question-image" type="file" className="form-control border-0 py-2 px-4" />   
+                                    </div>
+                                    <br />
                                     <label><strong>Option A</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
                                         <input value={a} onChange={(e)=>setA(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option A" />   
@@ -309,27 +337,36 @@ function EditQuiz() {
             <br />
             <br />
             <div className="d-flex justify-content-center">
-                <div className="w-50">
+                <div className="w-75">
                     <h3>Quiz Details</h3>
                     <br />
-                    <div className="p-4 box-shadow-card rounded-3 row position-relative">
+                    <div style={{'overflow':'hidden'}} className="box-shadow-card rounded-3 row position-relative g-0">
                         <span id="none" onClick={handleOpen} className="edit-icon p-4"><i class="fal fa-pen fs-5"></i></span>
-                        <div className="col-lg-6">
-                            <p><strong>Quiz Name</strong></p>
-                            <h6>{quizName}</h6>
-                            <br />
-                            <p><strong>Date</strong></p>
-                            <h6>{date}</h6>
-                            <br />
-                            <p><strong>Time</strong></p>
-                            <h6>{startTime} to {endTime}</h6>
+                        <div className="col-lg-6 d-flex justify-content-center align-items-center">
+                            {quiz.banner?
+                                <img style={{'objectFit':'cover'}} src={quiz.banner} alt="Quiz Banner" height="100%" width="100%" />
+                            :
+                                <i class="fal fa-image fa-3x text-muted"></i>
+                            }
                         </div>
-                        <div className="col-lg-6">
-                            <p><strong>Duration</strong></p>
-                            <h6>{time} minutes</h6>
-                            <br />
-                            <p><strong>Number of Questions</strong></p>
-                            <h6>{noOfQues}</h6>
+                        <div className="col-lg-6 p-4 row g-0">
+                            <div className="col-lg-6">
+                                <p><strong>Quiz Name</strong></p>
+                                <h6>{quizName}</h6>
+                                <br />
+                                <p><strong>Date</strong></p>
+                                <h6>{date}</h6>
+                                <br />
+                                <p><strong>Time</strong></p>
+                                <h6>{startTime} to {endTime}</h6>
+                            </div>
+                            <div className="col-lg-6">
+                                <p><strong>Duration</strong></p>
+                                <h6>{time} minutes</h6>
+                                <br />
+                                <p><strong>Number of Questions</strong></p>
+                                <h6>{noOfQues}</h6>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -340,9 +377,18 @@ function EditQuiz() {
                 <br />
                 <div className="row g-3">
                     {questions.map((q,i)=>{
-                        return <div className="col-lg-3 col-md-4 col-sm-6 px-2 position-relative">
+                        return <div className="col-lg-4 col-md-6 px-2 position-relative h-100">
                             <span id={i} onClick={handleOpen} className="edit-icon p-4 bg-none"><i class="fal fa-pen fs-5"></i></span>
-                            <div className="p-5 box-shadow-card rounded-3">{q.Question}</div> 
+                            <div style={{'overflow':'hidden'}} className="box-shadow-card rounded-3 row g-0">
+                                <div className="col-5 d-flex justify-content-center align-items-center">
+                                    {q.Banner?
+                                        <img style={{'objectFit':'cover'}} src={q.Banner} alt="Question" height="100%" width="100%" />
+                                        :
+                                        <i class="fal fa-image fa-3x text-muted"></i>
+                                    }
+                                </div>
+                                <div className="col-7 px-4 py-5">{q.Question}</div>
+                            </div> 
                         </div>
                     })}
                     <button onClick={newQuestion} style={{'width':'auto', 'right':'0', 'bottom':'0', 'backgroundColor':'#0d1842'}} className="position-fixed btn m-5 rounded-pill box-shadow-card text-white px-5 py-2">Add a question</button>

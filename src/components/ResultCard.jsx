@@ -32,7 +32,7 @@ export default function ResultCard(props){
     const download=(e)=>{
         e.preventDefault();
         let id=props.id;
-        firebaseApp.firestore().collection("Results").where("quizID", "==", id).get().then((docs)=>{
+        firebaseApp.firestore().collection("Quizzes/"+id+"/Attendees").get().then((docs)=>{
             let temp=[];
             docs.forEach(doc=>{
                 temp.push(doc.data())
@@ -41,9 +41,14 @@ export default function ResultCard(props){
         }).then((res)=>{
             res = res.map(doc=>{
                 return ({
-                    Name:doc.name,
-                    Username:doc.username,
-                    Score:doc.score
+                    Name:doc.attendeeDetails.Name,
+                    Email:doc.attendeeDetails.Email,
+                    MobileNumber:doc.attendeeDetails.MobileNumber,
+                    College:doc.attendeeDetails.College,
+                    City:doc.attendeeDetails.City,
+                    State:doc.attendeeDetails.State,
+                    Country:doc.attendeeDetails.Country,
+                    Score:doc.attendeeScore
                 })
             })
             
@@ -80,7 +85,7 @@ export default function ResultCard(props){
     const [open, setOpen] = React.useState(false);
 
     const handleOpen = () => {
-        firebaseApp.firestore().collection("Results").where("quizID", "==", props.id).get().then((docs)=>{
+        firebaseApp.firestore().collection("Quizzes/"+props.id+"/Attendees").get().then((docs)=>{
             let temp=[];
             docs.forEach(doc=>{
                 temp.push(doc.data())
@@ -121,7 +126,7 @@ export default function ResultCard(props){
                                 <select class="form-select">
                                     <option value="" selected>First</option>
                                     {participants.map(p=>{
-                                        return <option value={p.username}>{p.username}</option>
+                                        return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
                                     })}
                                 </select>    
                             </div>
@@ -132,7 +137,7 @@ export default function ResultCard(props){
                                 <select class="form-select">
                                     <option value="" selected>Second</option>
                                     {participants.map(p=>{
-                                        return <option value={p.username}>{p.username}</option>
+                                        return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
                                     })}
                                 </select>        
                             </div>
@@ -143,7 +148,7 @@ export default function ResultCard(props){
                                 <select class="form-select">
                                     <option value="" selected>Third</option>
                                     {participants.map(p=>{
-                                        return <option value={p.username}>{p.username}</option>
+                                        return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
                                     })}
                                 </select>        
                             </div>

@@ -76,9 +76,6 @@ function Profile() {
 
     const updateProfile=(e)=>{
         let img=document.getElementById("image-input").files[0]
-        if(img){
-            updateImage(img)
-        }
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).update({
             name:name,
             email:email,
@@ -89,9 +86,9 @@ function Profile() {
             country:country,
             completed:true
         }).then(()=>{
-            setsave(!save)
-            handleClose()
-            window.location.reload()
+            if(img){
+                updateImage(img)
+            }
         })
     }
     const updateImage=(img)=>{
@@ -105,6 +102,8 @@ function Profile() {
                     photoURL:url
                 }).then(()=>{
                     setsave(!save)
+                    handleClose()
+                    window.location.reload()
                 })
             })
         })

@@ -11,7 +11,7 @@ export default function Dashboard(props){
     const [quizzesOrganized, setquizzesOrganized] = useState([])
     const history=useHistory()
     useEffect(()=>{
-        firebaseApp.firestore().collection("Results").where("username", "==", currentUser.email).get().then(docs=>{
+        firebaseApp.firestore().collection("Users/"+currentUser.email+"/AttendedQuizzes").get().then(docs=>{
             let temp=[]
             docs.forEach(doc=>{
                 temp.push(doc.data())
@@ -44,7 +44,7 @@ export default function Dashboard(props){
                 <div className="row no-gutters">
                     {quizzesAttended.map(quiz=>{
                         return <div className="col-lg-6">
-                            <ResultCard id={quiz.quizID} title={quiz.currentQuiz.quizName} score={quiz.score} maxScore={quiz.currentQuiz.noOfQues} />
+                            <ResultCard id={quiz.quizID} title={quiz.quizDetails.quizName} score={quiz.score} maxScore={quiz.quizDetails.noOfQues} banner={quiz.quizDetails.banner} />
                         </div>
                     })}
                 </div>

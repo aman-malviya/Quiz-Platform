@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import firebaseApp from '../firebase'
 import {useHistory, useParams} from "react-router-dom"
 import Loader from './Loader';
+import { useAuth } from '../Contexts/AuthContext';
 
 export default function Score(){
     const [loading, setLoading]=useState(true);
@@ -13,10 +14,11 @@ export default function Score(){
     const {id} = useParams();
     const [quiz, setquiz] = useState({})
     const [result, setresult] = useState({})
+    const {currentUser}=useAuth()
 
     useEffect(()=>{
         sessionStorage.removeItem("submitTime")
-        firebaseApp.firestore().collection("Results").doc(id).get().then((doc)=>{
+        firebaseApp.firestore().collection("Users/"+currentUser.email+"/AttendedQuizzes").doc(id).get().then((doc)=>{
             setresult(doc.data());
             firebaseApp.firestore().collection("Quizzes").doc(doc.data().quizID).get().then((q)=>{
                 setquiz(q.data())

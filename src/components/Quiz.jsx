@@ -15,8 +15,23 @@ function Quiz() {
     const history=useHistory()
     const [currentQuiz, setCurrentQuiz]=useState({})
     const [URL, setURL] = useState("")
+    const [attendee, setattendee] = useState({})
 
-
+    useEffect(()=>{
+        firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
+            let temp={
+                Name:doc.data().firstName+" "+doc.data().lastName,
+                Email:doc.data().email,
+                MobileNumber:doc.data().mobileNumber,
+                College:doc.data().college,
+                City:doc.data().city,
+                State:doc.data().state,
+                Country:doc.data().country,
+                Image:doc.data().photoURL
+            }
+            setattendee(temp)
+        })
+    },[])
     useEffect(()=>{
         firebaseApp.firestore().collection("Quizzes").doc(id).get().then(doc=>{
             setCurrentQuiz(doc.data())
@@ -88,15 +103,18 @@ function Quiz() {
             }
         }
 
-        firebaseApp.firestore().collection("Results").add({
-            username:currentUser.email,
-            name:currentUser.displayName,
+        firebaseApp.firestore().collection("Users/"+currentUser.email+"/AttendedQuizzes").add({
             score:score,
             quizID:id,
-            currentQuiz
+            quizDetails:currentQuiz
           }).then((docRef)=>{
-            history.push("/score/"+docRef.id);
-            setloading(false);
+              firebaseApp.firestore().collection("Quizzes/"+id+"/Attendees").add({
+                attendeeDetails:attendee,
+                attendeeScore:score,
+              }).then(()=>{
+                  history.push("/score/"+docRef.id);
+                  setloading(false);
+              })
           })
     }
 
@@ -123,9 +141,16 @@ function Quiz() {
 
             <div style={{'background':'url("'+currentQuiz.banner+'")'}} className="sideImg position-relative">
                 <div className="blue d-flex justify-content-center align-items-center text-white p-5 pb-0">
-                    <div>
+                    <div style={{'display':'flex', 'flexDirection':'column', 'alignItems':'center'}}>
                         <p style={{'fontSize':'0.9rem', 'opacity':'0.75'}} className="text-center">Question {index+1}/{totalQues}</p>
-                        <h3 className="mb-5 pb-5">{questions[index]&&questions[index].question}</h3>
+                        <h3 className="mb-5">{questions[index]&&questions[index].question}</h3>
+                        {questions[index].banner?
+                            <div className="mb-5 rounded-3 box-shadow-card" style={{'width':window.innerWidth<700?'90%':'50%', 'overflow':'hidden'}}>
+                                <img src={questions[index].banner} alt="Question" width="100%" />
+                            </div>
+                            :
+                            <div></div>
+                        }
                     </div>
                 </div>
             </div>
