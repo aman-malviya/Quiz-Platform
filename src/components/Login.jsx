@@ -34,13 +34,20 @@ export default function Login(){
             .signInWithPopup(googleProvider)
             .then((result) => {
                 var user = result.user;
-                firebaseApp.firestore().collection("Users").doc(user.email).update({
-                    firstName: user.displayName.split(" ")[0],
-                    lastName: user.displayName.split(" ")[1],
-                    email:user.email,      
-                }).then(()=>{
-                    history.push("/dashboard")
+                firebaseApp.firestore().collection("Users").doc(user.email).get().then((doc)=>{
+                    if(doc.exists){
+                        history.push("/dashboard")
+                    }else{
+                        firebaseApp.firestore().collection("Users").doc(user.email).set({
+                            firstName: user.displayName.split(" ")[0],
+                            lastName: user.displayName.split(" ")[1],
+                            email:user.email,      
+                        }).then(()=>{
+                            history.push("/dashboard")
+                        })
+                    }
                 })
+                
             }).catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;

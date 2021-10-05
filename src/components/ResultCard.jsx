@@ -101,8 +101,13 @@ export default function ResultCard(props){
     const handleClose = () => {
         setOpen(false);
     };
-
-    return(<div>
+    const deleteQuiz=(e)=>{
+        e.preventDefault()
+        firebaseApp.firestore().collection("Quizzes").doc(props.id).delete().then(()=>{
+            window.location.reload()
+        })
+    }
+    return(<div className="mb-3">
             <div>
                 <Modal
                     aria-labelledby="transition-modal-title"
@@ -195,8 +200,9 @@ export default function ResultCard(props){
                             </div>
                             :
                             <div>
-                                <Link to={"/edit/"+props.id}><button data-bs-toggle="tooltip" data-bs-placement="top" title="Edit quiz" className="btn rounded-circle p-2 px-3 text-white"><i class="fal fa-pen fs-4"></i></button></Link>
-                                <button onClick={download} data-bs-toggle="tooltip" data-bs-placement="top" title="Download Results" className="btn rounded-circle p-2 px-3 text-white">{buttonloading?<ButtonLoader />:<i class="far fa-arrow-to-bottom fs-4"></i>}</button>
+                                <button onClick={deleteQuiz} data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Quiz" className="btn rounded-circle p-2 text-white"><i class="fal fa-trash fs-4"></i></button>
+                                <Link to={"/edit/"+props.id}><button data-bs-toggle="tooltip" data-bs-placement="top" title="Edit quiz" className="btn rounded-circle p-2 text-white"><i class="fal fa-pen fs-4"></i></button></Link>
+                                <button onClick={download} data-bs-toggle="tooltip" data-bs-placement="top" title="Download Results" className="btn rounded-circle p-2 text-white">{buttonloading?<ButtonLoader />:<i class="far fa-arrow-to-bottom fs-4"></i>}</button>
                             </div>
                         }
                     </div>

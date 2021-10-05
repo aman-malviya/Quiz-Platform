@@ -127,10 +127,10 @@ function Home(props) {
         setphoto(doc.data().photoURL)
         if(doc.data().completed){
           setprofile(true);
-          setloading(false)
         }else{
           setoption("profile")
         }
+        setloading(false)
       })
     },[])
   
