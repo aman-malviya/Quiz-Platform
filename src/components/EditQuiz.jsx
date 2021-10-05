@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Loader from './Loader';
+import ButtonLoader from './ButtonLoader';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +32,8 @@ function EditQuiz() {
     const {id} = useParams();
     const [quiz, setQuiz]=useState({})
     const [questions, setQuestions]=useState([])
-    const [loading, setloading] = useState(false)
+    const [loading, setloading] = useState(true)
+    const [buttonloading, setbuttonloading] = useState(false)
 
     //Edit quiz details
     const [quizID, setquizID] = useState("")
@@ -62,26 +65,29 @@ function EditQuiz() {
             setEndTime(doc.data().endTime);
             setDate(doc.data().date);
             setNoOfQues(doc.data().noOfQues);
-            setTime(doc.data().timeDuration)
-        })
-        firebaseApp.firestore().collection("Quizzes").doc(id).collection("Questions").onSnapshot(snap=>{
-            let temp=[];
-            snap.docs.forEach(doc=>{
-                temp.push({
-                    Question:doc.data().question,
-                    OptionA:doc.data().A,
-                    OptionB:doc.data().B,
-                    OptionC:doc.data().C,
-                    OptionD:doc.data().D,
-                    CorrectOption:doc.data().ans,
-                    id:doc.id,
-                    Banner:doc.data().banner
+            setTime(doc.data().timeDuration);
+
+            firebaseApp.firestore().collection("Quizzes").doc(id).collection("Questions").onSnapshot(snap=>{
+                let temp=[];
+                snap.docs.forEach(doc=>{
+                    temp.push({
+                        Question:doc.data().question,
+                        OptionA:doc.data().A,
+                        OptionB:doc.data().B,
+                        OptionC:doc.data().C,
+                        OptionD:doc.data().D,
+                        CorrectOption:doc.data().ans,
+                        id:doc.id,
+                        Banner:doc.data().banner
+                    })
                 })
+                temp.sort((a,b)=>{
+                    return a.Question.length - b.Question.length;
+                })
+                setNoOfQues(temp.length)
+                setQuestions(temp);
+                setloading(false)
             })
-            temp.sort((a,b)=>{
-                return a.Question.length - b.Question.length;
-            })
-            setQuestions(temp);
         })
     }, [refetch])
 
@@ -115,6 +121,7 @@ function EditQuiz() {
     };
 
     const saveQuiz=(e)=>{
+        setbuttonloading(true)
         e.preventDefault();
         const year=date.split("-")[0];
         const month=date.split("-")[1];
@@ -137,6 +144,7 @@ function EditQuiz() {
             if(img){
                 updateQuizBanner(img)
             }else{
+                setbuttonloading(false)
                 setrefetch(!refetch)
                 handleClose()
             }
@@ -145,6 +153,7 @@ function EditQuiz() {
     }
     const saveQuestion=(e)=>{
         e.preventDefault();
+        setbuttonloading(true)
         const qid=questions[index].id
         const img=document.getElementById("question-image").files[0]
         firebaseApp.firestore().collection("Quizzes").doc(quizID).collection("Questions").doc(qid).update({
@@ -158,6 +167,7 @@ function EditQuiz() {
             if(img){
                 updateQuestionImage(img,qid)
             }else{
+                setbuttonloading(false)
                 setrefetch(!refetch)
                 handleClose()
             }
@@ -187,6 +197,7 @@ function EditQuiz() {
                 firebaseApp.firestore().collection("Quizzes").doc(id).update({
                     banner:url
                 }).then(()=>{
+                    setbuttonloading(false)
                     setrefetch(!refetch)
                     handleClose()
                 })
@@ -203,13 +214,26 @@ function EditQuiz() {
                 firebaseApp.firestore().collection("Quizzes/"+id+"/Questions").doc(qid).update({
                     banner:url
                 }).then(()=>{
+                    setbuttonloading(false)
                     setrefetch(!refetch)
                     handleClose()
                 })
             })
         })
     }
-    return (
+
+    const deleteQuestion=(e)=>{
+        e.preventDefault()
+        const ind=e.target.parentNode.id;
+        const id=questions[ind].id
+
+        firebaseApp.firestore().collection("Quizzes/"+quizID+"/Questions").doc(id).delete().then(()=>{
+            setrefetch(!refetch)
+        })
+    }
+    return (loading?
+        <Loader />
+        :
         <div className="p-5">
             {/*Modal*/}
             <Modal
@@ -243,6 +267,7 @@ function EditQuiz() {
                                     <div class="input-group my-2 shadow rounded-2">
                                         <input id="quiz-banner" type="file" className="form-control border-0 py-2 px-4" />   
                                     </div>
+                                    <p className="text-muted">Note: This image will replace your previous banner (if any).</p>
                                     <br />
                                     <label><strong>Date</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
@@ -264,12 +289,7 @@ function EditQuiz() {
                                         <input value={time} onChange={(e)=>setTime(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Duration of the Quiz" />   
                                     </div>
                                     <br />
-                                    <label><strong>Number of Questions</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={noOfQues} onChange={(e)=>setNoOfQues(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Number of Questions" />   
-                                    </div>
-                                    <br />
-                                    <button onClick={saveQuiz} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">Save</button>
+                                    <button onClick={saveQuiz} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
                                     <br />
                                 </div>
                                 :
@@ -289,6 +309,7 @@ function EditQuiz() {
                                     <div class="input-group my-2 shadow rounded-2">
                                         <input id="question-image" type="file" className="form-control border-0 py-2 px-4" />   
                                     </div>
+                                    <p className="text-muted">Note: This image will replace your previous image (if any).</p>
                                     <br />
                                     <label><strong>Option A</strong></label>
                                     <div class="input-group my-2 shadow rounded-2">
@@ -321,7 +342,7 @@ function EditQuiz() {
                                         </select>   
                                     </div>
                                     <br />
-                                    <button onClick={saveQuestion} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">Save</button>
+                                    <button onClick={saveQuestion} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
                                     <br />
                                 </div>
                             }
@@ -337,11 +358,11 @@ function EditQuiz() {
             <br />
             <br />
             <div className="d-flex justify-content-center">
-                <div className="w-75">
+                <div style={{'width':window.innerWidth<700?'90%':'75%'}}>
                     <h3>Quiz Details</h3>
                     <br />
                     <div style={{'overflow':'hidden'}} className="box-shadow-card rounded-3 row position-relative g-0">
-                        <span id="none" onClick={handleOpen} className="edit-icon p-4"><i class="fal fa-pen fs-5"></i></span>
+                        <span id="none" onClick={handleOpen} className="edit-icon p-3"><i style={{'background':window.innerWidth<990?'#fff':'none', 'borderRadius':'50%'}} class="fal fa-pen fs-5 p-2"></i></span>
                         <div className="col-lg-6 d-flex justify-content-center align-items-center">
                             {quiz.banner?
                                 <img style={{'objectFit':'cover'}} src={quiz.banner} alt="Quiz Banner" height="100%" width="100%" />
@@ -378,7 +399,7 @@ function EditQuiz() {
                 <div className="row g-3">
                     {questions.map((q,i)=>{
                         return <div className="col-lg-4 col-md-6 px-2 position-relative h-100">
-                            <span id={i} onClick={handleOpen} className="edit-icon p-4 bg-none"><i class="fal fa-pen fs-5"></i></span>
+                            <span style={{'position':'absolute', 'right':'0', 'top':'0'}} id={i} className="bg-none"><i onClick={handleOpen} style={{'cursor':'pointer'}} class="fal fa-pen fs-5 text-primary px-2 py-3"></i> <i onClick={deleteQuestion} style={{'cursor':'pointer'}} class="fal fa-trash fs-5 text-danger py-3 px-2 me-2"></i></span>
                             <div style={{'overflow':'hidden'}} className="box-shadow-card rounded-3 row g-0">
                                 <div className="col-5 d-flex justify-content-center align-items-center">
                                     {q.Banner?

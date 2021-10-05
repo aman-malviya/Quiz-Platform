@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Loader from './Loader';
+import ButtonLoader from './ButtonLoader';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,9 +36,11 @@ function Profile() {
     const [country, setcountry] = useState("")
     const [state, setstate] = useState("")
     const [city, setcity] = useState("")
-    const [save, setsave] = useState(false)
+    const [refetch, setrefetch] = useState(false)
     const [currentUser, setcurrentUser] = useState({})
     const [photo, setphoto] = useState("")
+    const [loading, setloading] = useState(true)
+    const [buttonloading, setbuttonloading] = useState(false)
     useEffect(()=>{
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).get().then(doc=>{
             setname(doc.data().firstName+" "+doc.data().lastName)
@@ -58,8 +62,9 @@ function Profile() {
                 college:doc.data().college,
             }
             setcurrentUser(temp);
+            setloading(false)
         })
-    },[save])
+    },[refetch])
 
 
     //Modal
@@ -75,6 +80,7 @@ function Profile() {
     };
 
     const updateProfile=(e)=>{
+        setbuttonloading(true)
         let img=document.getElementById("image-input").files[0]
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).update({
             name:name,
@@ -88,6 +94,10 @@ function Profile() {
         }).then(()=>{
             if(img){
                 updateImage(img)
+            }else{
+                setbuttonloading(false)
+                setrefetch(!refetch)
+                handleClose()
             }
         })
     }
@@ -101,14 +111,17 @@ function Profile() {
                 firebaseApp.firestore().collection('Users').doc(email).update({
                     photoURL:url
                 }).then(()=>{
-                    setsave(!save)
+                    setbuttonloading(false)
+                    setrefetch(!refetch)
                     handleClose()
                     window.location.reload()
                 })
             })
         })
     }
-    return (
+    return (loading?
+        <Loader />
+        :
         <div>
             <h1 className="mb-5">{currentUser.completed?"Profile":"Complete Your Profile"}</h1>
             {/*Modal*/}
@@ -146,6 +159,7 @@ function Profile() {
                             <div class="input-group my-2 shadow rounded-2">
                                 <input id="image-input" type="file" className="form-control border-0 py-2 px-4" />   
                             </div>
+                            <p className="text-muted">Note: This image will replace your previous profile picture (if any).</p>
                             <br />
                             <label><strong>Mobile Number</strong></label>
                             <div class="input-group my-2 shadow rounded-2">
@@ -184,7 +198,7 @@ function Profile() {
                                 </select>   
                             </div>
                             <br />
-                            <button onClick={updateProfile} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">Save</button>
+                            <button onClick={updateProfile} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
                             <br />
                         </div>
                     </Fade>
@@ -201,7 +215,7 @@ function Profile() {
                     <div className="col-lg-6">
                         <p><strong>Contact Information</strong></p>
                         <h6>{currentUser.email}</h6>
-                        {currentUser.mobile??<h6>{currentUser.mobile}</h6>}
+                        {currentUser.mobile?<h6>{currentUser.mobile}</h6>:<div></div>}
                         <br />
                         <br />
                     </div>

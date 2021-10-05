@@ -15,7 +15,7 @@ import Events from './Events'
 import Dashboard from './Dashboard'
 import CreateNewEvent from './CreateNewEvent'
 import Profile from './Profile';
-
+import Loader from './Loader'
 
 const drawerWidth = 240;
 
@@ -121,16 +121,13 @@ function Home(props) {
           handleDrawerToggle()
         }
     }
-    
-    setTimeout(() => {
-      setloading(false)
-    }, 2000);
 
     useEffect(()=>{
       firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
         setphoto(doc.data().photoURL)
         if(doc.data().completed){
           setprofile(true);
+          setloading(false)
         }else{
           setoption("profile")
         }
@@ -157,7 +154,9 @@ function Home(props) {
   
     const container = window !== undefined ? () => window().document.body : undefined;
   
-  return (
+  return (loading?
+      <Loader />
+      :
       <div className={classes.root}>
       <CssBaseline />
       <nav className={classes.drawer} aria-label="mailbox folders">

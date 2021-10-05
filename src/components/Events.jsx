@@ -2,11 +2,13 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import firebaseApp from '../firebase'
 import EventCard from './EventCard';
+import Loader from './Loader';
 
 
 export default function Events(){
 
     const [quizzes,setQuizzes]=useState([]);
+    const [loading, setloading] = useState(true)
     
     useEffect(()=>{
         firebaseApp.firestore().collection("Quizzes").onSnapshot(snapshot=>{
@@ -16,10 +18,14 @@ export default function Events(){
                     id:doc.id
                 }))
             )
+            setloading(false)
         })
     }
     ,[])
-    return <div>
+    return (loading?
+    <Loader />
+    :
+    <div>
         <h1 className="mb-5">Events</h1>
         <br />
         <h5>Live Quizzes</h5>
@@ -45,5 +51,5 @@ export default function Events(){
                 </div>        
             })}
         </div>
-    </div>
+    </div>)
 }

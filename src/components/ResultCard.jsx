@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-
+import ButtonLoader from './ButtonLoader'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,9 +28,11 @@ const useStyles = makeStyles((theme) => ({
 export default function ResultCard(props){
     const history=useHistory()
     const [participants, setparticipants] = useState([])
+    const [buttonloading, setbuttonloading] = useState(false)
     
     const download=(e)=>{
         e.preventDefault();
+        setbuttonloading(true)
         let id=props.id;
         firebaseApp.firestore().collection("Quizzes/"+id+"/Attendees").get().then((docs)=>{
             let temp=[];
@@ -74,7 +76,7 @@ export default function ResultCard(props){
             document.body.appendChild(a);
             a.click()
             document.body.removeChild(a);
-
+            setbuttonloading(false);
         }).catch(e=>{
             console.log(e)
         })
@@ -194,7 +196,7 @@ export default function ResultCard(props){
                             :
                             <div>
                                 <Link to={"/edit/"+props.id}><button data-bs-toggle="tooltip" data-bs-placement="top" title="Edit quiz" className="btn rounded-circle p-2 px-3 text-white"><i class="fal fa-pen fs-4"></i></button></Link>
-                                <button onClick={download} data-bs-toggle="tooltip" data-bs-placement="top" title="Download Results" className="btn rounded-circle p-2 px-3 text-white"><i class="far fa-arrow-to-bottom fs-4"></i></button>
+                                <button onClick={download} data-bs-toggle="tooltip" data-bs-placement="top" title="Download Results" className="btn rounded-circle p-2 px-3 text-white">{buttonloading?<ButtonLoader />:<i class="far fa-arrow-to-bottom fs-4"></i>}</button>
                             </div>
                         }
                     </div>

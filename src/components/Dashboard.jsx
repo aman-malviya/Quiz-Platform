@@ -3,12 +3,14 @@ import firebaseApp from '../firebase'
 import {useAuth} from '../Contexts/AuthContext'
 import ResultCard from './ResultCard'
 import {useHistory} from 'react-router-dom'
+import Loader from './Loader'
 
 export default function Dashboard(props){
     const name=props.user.displayName && props.user.displayName.split(" ")[0];
     const {currentUser} = useAuth();
     const [quizzesAttended, setquizzesAttended] = useState([])
     const [quizzesOrganized, setquizzesOrganized] = useState([])
+    const [loading, setloading] = useState(true)
     const history=useHistory()
     useEffect(()=>{
         firebaseApp.firestore().collection("Users/"+currentUser.email+"/AttendedQuizzes").get().then(docs=>{
@@ -17,13 +19,15 @@ export default function Dashboard(props){
                 temp.push(doc.data())
             })
             setquizzesAttended(temp)
-        })
-        firebaseApp.firestore().collection("Quizzes").where("organizer", "==", currentUser.email).get().then(docs=>{
-            let temp=[]
-            docs.forEach(doc=>{
-                temp.push([doc.id,doc.data()])
+
+            firebaseApp.firestore().collection("Quizzes").where("organizer", "==", currentUser.email).get().then(docs=>{
+                let temp=[]
+                docs.forEach(doc=>{
+                    temp.push([doc.id,doc.data()])
+                })
+                setquizzesOrganized(temp)
+                setloading(false)
             })
-            setquizzesOrganized(temp)
         })
     },[])
 
@@ -36,7 +40,9 @@ export default function Dashboard(props){
         })
     }
 
-    return(
+    return(loading?
+        <Loader />
+        :
         <div>
             <h1 className="mb-5">Hello {name} !</h1>
             <div id="attended" className="p-3 rounded">
