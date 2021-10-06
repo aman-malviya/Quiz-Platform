@@ -122,15 +122,17 @@ function Home(props) {
     }
 
     useEffect(()=>{
-      firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
-        setphoto(doc.data().photoURL)
-        if(doc.data().completed){
-          setprofile(true);
-        }else{
-          setoption("profile")
-        }
-        setloading(false)
-      })
+      setTimeout(() => {
+        firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
+          setphoto(doc.data().photoURL)
+          if(doc.data().completed){
+            setprofile(true);
+          }else{
+            setoption("profile")
+          }
+          setloading(false)
+        })
+      }, 3000);
     },[currentUser])
   
   //Dashboard

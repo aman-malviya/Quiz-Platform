@@ -40,8 +40,9 @@ export default function Login(){
                     }else{
                         firebaseApp.firestore().collection("Users").doc(user.email).set({
                             firstName: user.displayName.split(" ")[0],
-                            lastName: user.displayName.split(" ")[1],
-                            email:user.email,      
+                            lastName: user.displayName.split(" ")[user.displayName.split(" ").length-1],
+                            email:user.email,   
+                            photoURL:user.photoURL   
                         }).then(()=>{
                             history.push("/dashboard")
                         })

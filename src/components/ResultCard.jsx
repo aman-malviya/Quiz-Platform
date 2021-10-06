@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import firebaseApp from '../firebase'
 import {Link} from 'react-router-dom'
 import TopThree from './TopThree'
@@ -27,6 +27,36 @@ const useStyles = makeStyles((theme) => ({
 export default function ResultCard(props){
     const [participants, setparticipants] = useState([])
     const [buttonloading, setbuttonloading] = useState(false)
+    const [first, setfirst] = useState("")
+    const [second, setsecond] = useState("")
+    const [third, setthird] = useState("")
+    const [firstURL, setfirstURL] = useState("")
+    const [secondURL, setsecondURL] = useState("")
+    const [thirdURL, setthirdURL] = useState("")
+    const [results, setresults] = useState(false)
+
+    useEffect(()=>{
+        firebaseApp.firestore().collection("Quizzes").doc(props.id).get().then(doc=>{
+            if(doc.data().resultsReleased){
+                setresults(doc.data().resultsReleased)
+                let f=doc.data().winners.first;
+                let s=doc.data().winners.second;
+                let t=doc.data().winners.third
+                setfirst(f)
+                setsecond(s)
+                setthird(t)
+                firebaseApp.firestore().collection("Users").doc(f).get().then(d=>{
+                    setfirstURL(d.data().photoURL)
+                })
+                firebaseApp.firestore().collection("Users").doc(s).get().then(d=>{
+                    setsecondURL(d.data().photoURL)
+                })
+                firebaseApp.firestore().collection("Users").doc(t).get().then(d=>{
+                    setthirdURL(d.data().photoURL)
+                })
+            }
+        })
+    },[props])
     
     const download=(e)=>{
         e.preventDefault();
@@ -85,7 +115,7 @@ export default function ResultCard(props){
     const [open, setOpen] = React.useState(false);
 
     const handleOpen = () => {
-        firebaseApp.firestore().collection("Quizzes/"+props.id+"/Attendees").get().then((docs)=>{
+        firebaseApp.firestore().collection("Quizzes/"+props.id+"/Attendees").orderBy('attendeeScore','desc').get().then((docs)=>{
             let temp=[];
             docs.forEach(doc=>{
                 temp.push(doc.data())
@@ -102,9 +132,25 @@ export default function ResultCard(props){
     const deleteQuiz=(e)=>{
         e.preventDefault()
         firebaseApp.firestore().collection("Quizzes").doc(props.id).delete().then(()=>{
+            handleClose()
             window.location.reload()
         })
     }
+    const releaseResults=(e)=>{
+        e.preventDefault()
+        firebaseApp.firestore().collection("Quizzes").doc(props.id).update({
+            winners:{
+                first:first,
+                second:second,
+                third:third
+            },
+            resultsReleased:true
+        }).then(()=>{
+            handleClose()
+            window.location.reload()
+        })
+    }
+
     return(<div className="mb-3">
             <div>
                 <Modal
@@ -121,46 +167,49 @@ export default function ResultCard(props){
                 >
                     <Fade in={open}>
                         <div className={classes.paper}>
-                            <br />
-                            <h5 id="transition-modal-title">Release Results</h5>
-                            <br />
-                            <div class="input-group my-2 shadow rounded-pill">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend2">1</span>
+                            <form onSubmit={releaseResults}>
+                                <br />
+                                {results?<p className="text-danger">Note: You have already released the results, this action may alter the previous results.</p>:<p></p>}
+                                <h5 id="transition-modal-title">Release Results</h5>
+                                <br />
+                                <div class="input-group my-2 shadow rounded-pill">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupPrepend2">1</span>
+                                    </div>
+                                    <select value={first} onChange={e=>setfirst(e.target.value)} required class="form-select">
+                                        <option value="" selected>First</option>
+                                        {participants.map(p=>{
+                                            return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
+                                        })}
+                                    </select>    
                                 </div>
-                                <select class="form-select">
-                                    <option value="" selected>First</option>
-                                    {participants.map(p=>{
-                                        return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
-                                    })}
-                                </select>    
-                            </div>
-                            <div class="input-group my-2 shadow rounded-pill">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend2">2</span>
+                                <div class="input-group my-2 shadow rounded-pill">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupPrepend2">2</span>
+                                    </div>
+                                    <select value={second} onChange={e=>setsecond(e.target.value)} required class="form-select">
+                                        <option value="" selected>Second</option>
+                                        {participants.map(p=>{
+                                            return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
+                                        })}
+                                    </select>        
                                 </div>
-                                <select class="form-select">
-                                    <option value="" selected>Second</option>
-                                    {participants.map(p=>{
-                                        return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
-                                    })}
-                                </select>        
-                            </div>
-                            <div class="input-group my-2 shadow rounded-pill">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend2">3</span>
+                                <div class="input-group my-2 shadow rounded-pill">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupPrepend2">3</span>
+                                    </div>
+                                    <select value={third} onChange={e=>setthird(e.target.value)} required class="form-select">
+                                        <option value="" selected>Third</option>
+                                        {participants.map(p=>{
+                                            return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
+                                        })}
+                                    </select>        
                                 </div>
-                                <select class="form-select">
-                                    <option value="" selected>Third</option>
-                                    {participants.map(p=>{
-                                        return <option value={p.attendeeDetails.Email}>{p.attendeeDetails.Email}</option>
-                                    })}
-                                </select>        
-                            </div>
-                            <br />
-                            <button style={{'backgroundColor':'#0d1842', 'color':'#FFF'}} className="btn rounded-pill w-100 shadow">Release</button>
-                            <br />
-                            <br />
+                                <br />
+                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#FFF'}} className="btn rounded-pill w-100 shadow">Release</button>
+                                <br />
+                                <br />
+                            </form>
                             <button className="btn w-100 p-0 m-0 fs-4" onClick={handleClose}><i class="fal fa-times-circle"></i></button>
                         </div>
                     </Fade>
@@ -172,11 +221,11 @@ export default function ResultCard(props){
                     <br /><br /><br /><br />
                     <div className="d-flex justify-content-center">
                         {props.score?
-                            <div style={{'opacity':'0.6'}}>
-                                {props.results?
-                                    <p style={{'cursor':'default'}} className="d-inline quiz-btn text-white px-5 py-2 btn">Results Awaited</p>
+                            <div>
+                                {results?
+                                    <TopThree firstURL={firstURL} secondURL={secondURL} thirdURL={thirdURL} first={first} second={second} third={third} />
                                     :
-                                    <TopThree />
+                                    <p style={{'cursor':'default', 'opacity':'0.5'}} className="d-inline quiz-btn text-white px-5 py-2 btn">Results Awaited</p>
                                 }
                             </div>
                             :
