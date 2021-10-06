@@ -61,7 +61,10 @@ export default function Login(){
         :
         <div className="row g-0 min-vh-100">
         <div className="col-lg-4 col-md-5 p-5">
-            <h3 className="text-dark text-center my-5">Welcome Back !</h3>
+            <div className="d-flex justify-content-center">
+                <img src="edify.png" height="90px" width="90px" alt="Edify" className="awesome-shadow-13 rounded-circle" />        
+            </div>
+            <h3 className="text-dark my-5 text-center">Welcome Back !</h3>
             <span>{toast}</span>
             <input className="rounded-top form-control py-3 bg-transparent text-input shadow" type="email" value ={email} onChange={event=>setEmail(event.target.value)}  placeholder="Email Address" required />
             <input className="form-control py-3 bg-transparent text-input shadow" value={password} onChange={event=>setPassword(event.target.value)} type="password" placeholder="Password" required />

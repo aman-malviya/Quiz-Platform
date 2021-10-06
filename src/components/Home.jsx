@@ -139,7 +139,7 @@ function Home(props) {
   
     const drawer = (
       <div>
-        <div style={{'backgroundColor':'#f9f9fb'}} className="min-vh-100 py-5 shadow-lg dashboard-nav position-relative">
+        <div style={{'backgroundColor':'#f9f9fb'}} className="min-vh-100 py-5 shadow-lg dashboard-nav position-relative"> 
             <div className="profile-icon d-flex justify-content-center pb-3">
                 <img className="rounded-circle my-border shadow-lg" src={photo?photo:"man.png"} alt="profile-icon" height="100px" width="100px" />
             </div>

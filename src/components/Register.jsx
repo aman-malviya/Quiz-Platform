@@ -45,15 +45,22 @@ export default function Register(){
         firebaseApp.auth()
             .signInWithPopup(googleProvider)
             .then((result) => {
-                // var credential = result.credential;
-                // var token = credential.accessToken;
                 var user = result.user;
-                firebaseApp.firestore().collection("Users").doc(user.email).set({
-                    firstName: user.displayName.split(" ")[0],
-                    lastName: user.displayName.split(" ")[1],
-                    email:user.email,        
+                firebaseApp.firestore().collection("Users").doc(user.email).get().then((doc)=>{
+                    if(doc.exists){
+                        history.push("/dashboard")
+                    }else{
+                        firebaseApp.firestore().collection("Users").doc(user.email).set({
+                            firstName: user.displayName.split(" ")[0],
+                            lastName: user.displayName.split(" ")[user.displayName.split(" ").length-1],
+                            email:user.email,   
+                            photoURL:user.photoURL   
+                        }).then(()=>{
+                            history.push("/dashboard")
+                        })
+                    }
                 })
-                history.push("/dashboard")
+                
             }).catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -66,6 +73,9 @@ export default function Register(){
         :
         <div className="row g-0 min-vh-100">
             <div className="col-lg-4 col-md-5 p-5">
+                <div className="d-flex justify-content-center">
+                    <img src="edify.png" height="90px" width="90px" alt="Edify" className="awesome-shadow-13 rounded-circle" />        
+                </div>
                 <h3 className="text-center text-dark my-5">Welcome {first} !</h3>
                 <span>{toast}</span>
                 <input className="rounded-top form-control py-3 bg-transparent text-input shadow" value={first} onChange={event=>setFirst(event.target.value)} type="text" placeholder="First Name" required />
