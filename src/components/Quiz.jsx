@@ -14,8 +14,8 @@ function Quiz() {
     const [loading, setloading] = useState(true)
     const history=useHistory()
     const [currentQuiz, setCurrentQuiz]=useState({})
-    const [URL, setURL] = useState("")
     const [attendee, setattendee] = useState({})
+    const [response, setResponse]=useState(new Array(totalQues))
 
     useEffect(()=>{
         firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
@@ -31,7 +31,7 @@ function Quiz() {
             }
             setattendee(temp)
         })
-    },[])
+    },[currentUser])
     useEffect(()=>{
         firebaseApp.firestore().collection("Quizzes").doc(id).get().then(doc=>{
             setCurrentQuiz(doc.data())
@@ -53,9 +53,8 @@ function Quiz() {
         if(response[index]){
             document.getElementById(response[index]).style.border="2px solid rgba(69, 123, 157,0.7)";
         }
-    },[index])
+    },[index, response])
 
-    const [response, setResponse]=useState(new Array(totalQues))
     const next=(e)=>{
         e.preventDefault();
         if(index < totalQues-1){

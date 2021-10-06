@@ -1,4 +1,3 @@
-import { sort } from 'cli-table';
 import React, {useState, useEffect} from 'react'
 import {useParams, Link} from 'react-router-dom'
 import firebaseApp from '../firebase';
@@ -53,7 +52,7 @@ function EditQuiz() {
     const [c,setC] = useState("");
     const [d,setD] = useState("");
     const [ans,setAns] = useState("");
-    const [toast, setToast]=useState("");
+    // const [toast, setToast]=useState("");
 
 
     useEffect(()=>{
@@ -89,7 +88,7 @@ function EditQuiz() {
                 setloading(false)
             })
         })
-    }, [refetch])
+    }, [refetch, id])
 
     //Modal
     const classes = useStyles();
@@ -121,8 +120,8 @@ function EditQuiz() {
     };
 
     const saveQuiz=(e)=>{
-        setbuttonloading(true)
         e.preventDefault();
+        setbuttonloading(true)
         const year=date.split("-")[0];
         const month=date.split("-")[1];
         const day=date.split("-")[2];
@@ -252,98 +251,103 @@ function EditQuiz() {
                         <div className={classes.paper}>
                             {flag?
                                 <div>
-                                    <br />
-                                    <div className='d-flex justify-content-between w-100'>
-                                        <h5 id="transition-modal-title">Quiz Details</h5>
-                                        <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
-                                    </div>
-                                    <br />  
-                                    <label><strong>Quiz Name</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={quizName} onChange={(e)=>setQuizName(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Name of the Quiz" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Quiz Banner</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input id="quiz-banner" type="file" className="form-control border-0 py-2 px-4" />   
-                                    </div>
-                                    <p className="text-muted">Note: This image will replace your previous banner (if any).</p>
-                                    <br />
-                                    <label><strong>Date</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={date} onChange={(e)=>setDate(e.target.value)} type="date" className="form-control border-0 py-2 px-4" placeholder="Date of the Quiz" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Start Time</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={startTime} onChange={(e)=>setStartTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Quiz starts at" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>End Time</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={endTime} onChange={(e)=>setEndTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Quiz ends at" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Duration (in minutes)</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={time} onChange={(e)=>setTime(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Duration of the Quiz" />   
-                                    </div>
-                                    <br />
-                                    <button onClick={saveQuiz} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
-                                    <br />
+                                    <form onSubmit={saveQuiz}> 
+                                        <br />
+                                        <div className='d-flex justify-content-between w-100'>
+                                            <h5 id="transition-modal-title">Quiz Details</h5>
+                                            <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
+                                        </div>
+                                        <br />  
+                                        <label><strong>Quiz Name <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={quizName} onChange={(e)=>setQuizName(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Name of the Quiz" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Quiz Banner</strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input id="quiz-banner" type="file" className="form-control border-0 py-2 px-4" />   
+                                        </div>
+                                        <p className="text-muted p-0 m-0">Note: This image will replace your previous banner (if any).</p>
+                                        <p className="text-muted">Suggestion: It's good to have a banner for your quiz. Banners attract the audience.</p>
+                                        <br />
+                                        <label><strong>Date <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={date} onChange={(e)=>setDate(e.target.value)} type="date" className="form-control border-0 py-2 px-4" placeholder="Date of the Quiz" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Start Time <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={startTime} onChange={(e)=>setStartTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Quiz starts at" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>End Time <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={endTime} onChange={(e)=>setEndTime(e.target.value)} type="time" className="form-control border-0 py-2 px-4" placeholder="Quiz ends at" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Duration (in minutes) <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={time} onChange={(e)=>setTime(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Duration of the Quiz" />   
+                                        </div>
+                                        <br />
+                                        <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
+                                        <br />
+                                    </form>
                                 </div>
                                 :
                                 <div>
-                                    <br />
-                                    <div className='d-flex justify-content-between w-100'>
-                                        <h5 id="transition-modal-title">Question {index+1}</h5>
-                                        <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
-                                    </div>
-                                    <br />  
-                                    <label><strong>Question</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={question} onChange={(e)=>setQuestion(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter the Question" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Attach an image (optional)</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input id="question-image" type="file" className="form-control border-0 py-2 px-4" />   
-                                    </div>
-                                    <p className="text-muted">Note: This image will replace your previous image (if any).</p>
-                                    <br />
-                                    <label><strong>Option A</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={a} onChange={(e)=>setA(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option A" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Option B</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={b} onChange={(e)=>setB(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option B" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Option C</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={c} onChange={(e)=>setC(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option C" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Option D</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <input value={d} onChange={(e)=>setD(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option D" />   
-                                    </div>
-                                    <br />
-                                    <label><strong>Answer</strong></label>
-                                    <div class="input-group my-2 shadow rounded-2">
-                                        <select className="form-select" value={ans} onChange={(e)=>setAns(e.target.value)}>
-                                            <option value="">Select an option</option>
-                                            <option value="A">A</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                            <option value="D">D</option>
-                                        </select>   
-                                    </div>
-                                    <br />
-                                    <button onClick={saveQuestion} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
-                                    <br />
+                                    <form onSubmit={saveQuestion}>
+                                        <br />
+                                        <div className='d-flex justify-content-between w-100'>
+                                            <h5 id="transition-modal-title">Question {index+1}</h5>
+                                            <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
+                                        </div>
+                                        <br />  
+                                        <label><strong>Question <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={question} onChange={(e)=>setQuestion(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter the Question" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Attach an image (optional)</strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input id="question-image" type="file" className="form-control border-0 py-2 px-4" />   
+                                        </div>
+                                        <p className="text-muted">Note: This image will replace your previous image (if any).</p>
+                                        <br />
+                                        <label><strong>Option A <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={a} onChange={(e)=>setA(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option A" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Option B <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={b} onChange={(e)=>setB(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option B" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Option C <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={c} onChange={(e)=>setC(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option C" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Option D <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={d} onChange={(e)=>setD(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Option D" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Answer <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <select required className="form-select" value={ans} onChange={(e)=>setAns(e.target.value)}>
+                                                <option value="">Select an option</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                                <option value="D">D</option>
+                                            </select>   
+                                        </div>
+                                        <br />
+                                        <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
+                                        <br />
+                                    </form>
                                 </div>
                             }
                         </div>

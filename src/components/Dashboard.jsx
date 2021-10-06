@@ -29,7 +29,7 @@ export default function Dashboard(props){
                 setloading(false)
             })
         })
-    },[])
+    },[currentUser])
 
     const newQuiz=()=>{
         firebaseApp.firestore().collection("Quizzes").add({

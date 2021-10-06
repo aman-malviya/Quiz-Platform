@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import {useHistory} from 'react-router-dom'
+import React, { useState } from 'react'
 import firebaseApp from '../firebase'
 import {Link} from 'react-router-dom'
 import TopThree from './TopThree'
@@ -26,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export default function ResultCard(props){
-    const history=useHistory()
     const [participants, setparticipants] = useState([])
     const [buttonloading, setbuttonloading] = useState(false)
     

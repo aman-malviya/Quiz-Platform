@@ -64,7 +64,7 @@ function Profile() {
             setcurrentUser(temp);
             setloading(false)
         })
-    },[refetch])
+    },[refetch, user])
 
 
     //Modal
@@ -80,6 +80,7 @@ function Profile() {
     };
 
     const updateProfile=(e)=>{
+        e.preventDefault()
         setbuttonloading(true)
         let img=document.getElementById("image-input").files[0]
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).update({
@@ -139,67 +140,69 @@ function Profile() {
                 >
                     <Fade in={open}>
                         <div className={classes.paper}>
-                            <br />
-                            <div className='d-flex justify-content-between w-100'>
-                                <h5 id="transition-modal-title">Complete Your Profile</h5>
-                                <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
-                            </div>
-                            <br />  
-                            <label><strong>Name</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <input disabled value={name} onChange={(e)=>setname(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Your Name" />   
-                            </div>
-                            <br />
-                            <label><strong>Email</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <input disabled value={email} onChange={(e)=>setemail(e.target.value)} type="email" className="form-control border-0 py-2 px-4" placeholder="Enter Your Email" />   
-                            </div>
-                            <br />
-                            <label><strong>Profile Picture</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <input id="image-input" type="file" className="form-control border-0 py-2 px-4" />   
-                            </div>
-                            <p className="text-muted">Note: This image will replace your previous profile picture (if any).</p>
-                            <br />
-                            <label><strong>Mobile Number</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <input value={mobile} onChange={(e)=>setmobile(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Your Mobile Number" />   
-                            </div>
-                            <br />
-                            <label><strong>College Name</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <input value={college} onChange={(e)=>setcollege(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter the Name of Current College" />   
-                            </div>
-                            <br />
-                            <label><strong>Country where your college is located</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <select value={country} onChange={(e)=>setcountry(e.target.value)} class="form-select">
-                                    <option selected value="">Select a Country</option>
-                                    <option value="India">India</option>
-                                    <option value="USA">USA</option>
-                                </select>   
-                            </div>
-                            <br />
-                            <label><strong>State where your college is located</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <select value={state} onChange={(e)=>setstate(e.target.value)} class="form-select">
-                                    <option selected value="">Select a State</option>
-                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                    <option value="Rajasthan">Rajasthan</option>
-                                </select>   
-                            </div>
-                            <br />
-                            <label><strong>City where your college is located</strong></label>
-                            <div class="input-group my-2 shadow rounded-2">
-                                <select value={city} onChange={(e)=>setcity(e.target.value)} class="form-select">
-                                    <option selected value="">Select a City</option>
-                                    <option value="Bhopal">Bhopal</option>
-                                    <option value="Sehore">Sehore</option>
-                                </select>   
-                            </div>
-                            <br />
-                            <button onClick={updateProfile} style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
-                            <br />
+                            <form onSubmit={updateProfile}>
+                                <br />
+                                <div className='d-flex justify-content-between w-100'>
+                                    <h5 id="transition-modal-title">Complete Your Profile</h5>
+                                    <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
+                                </div>
+                                <br />  
+                                <label><strong>Name <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <input required disabled value={name} onChange={(e)=>setname(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Your Name" />   
+                                </div>
+                                <br />
+                                <label><strong>Email <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <input required disabled value={email} onChange={(e)=>setemail(e.target.value)} type="email" className="form-control border-0 py-2 px-4" placeholder="Enter Your Email" />   
+                                </div>
+                                <br />
+                                <label><strong>Profile Picture</strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <input id="image-input" type="file" className="form-control border-0 py-2 px-4" />   
+                                </div>
+                                <p className="text-muted">Note: This image will replace your previous profile picture (if any).</p>
+                                <br />
+                                <label><strong>Mobile Number <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <input required value={mobile} onChange={(e)=>setmobile(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter Your Mobile Number" />   
+                                </div>
+                                <br />
+                                <label><strong>College Name <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <input required value={college} onChange={(e)=>setcollege(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter the Name of Current College" />   
+                                </div>
+                                <br />
+                                <label><strong>Country where your college is located <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <select required value={country} onChange={(e)=>setcountry(e.target.value)} class="form-select">
+                                        <option selected value="">Select a Country</option>
+                                        <option value="India">India</option>
+                                        <option value="USA">USA</option>
+                                    </select>   
+                                </div>
+                                <br />
+                                <label><strong>State where your college is located <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <select required value={state} onChange={(e)=>setstate(e.target.value)} class="form-select">
+                                        <option selected value="">Select a State</option>
+                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                    </select>   
+                                </div>
+                                <br />
+                                <label><strong>City where your college is located <span className="text-danger">*</span></strong></label>
+                                <div class="input-group my-2 shadow rounded-2">
+                                    <select required value={city} onChange={(e)=>setcity(e.target.value)} class="form-select">
+                                        <option selected value="">Select a City</option>
+                                        <option value="Bhopal">Bhopal</option>
+                                        <option value="Sehore">Sehore</option>
+                                    </select>   
+                                </div>
+                                <br />
+                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
+                                <br />
+                            </form>
                         </div>
                     </Fade>
             </Modal>

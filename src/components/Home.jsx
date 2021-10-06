@@ -13,7 +13,6 @@ import {useHistory} from 'react-router-dom'
 import {useAuth} from '../Contexts/AuthContext'
 import Events from './Events'
 import Dashboard from './Dashboard'
-import CreateNewEvent from './CreateNewEvent'
 import Profile from './Profile';
 import Loader from './Loader'
 
@@ -132,7 +131,7 @@ function Home(props) {
         }
         setloading(false)
       })
-    },[])
+    },[currentUser])
   
   //Dashboard
   
