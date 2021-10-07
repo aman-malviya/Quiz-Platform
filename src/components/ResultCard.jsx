@@ -138,6 +138,7 @@ export default function ResultCard(props){
     }
     const releaseResults=(e)=>{
         e.preventDefault()
+        setbuttonloading(true)
         firebaseApp.firestore().collection("Quizzes").doc(props.id).update({
             winners:{
                 first:first,
@@ -146,6 +147,7 @@ export default function ResultCard(props){
             },
             resultsReleased:true
         }).then(()=>{
+            setbuttonloading(false)
             handleClose()
             window.location.reload()
         })
@@ -206,7 +208,7 @@ export default function ResultCard(props){
                                     </select>        
                                 </div>
                                 <br />
-                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#FFF'}} className="btn rounded-pill w-100 shadow">Release</button>
+                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#FFF'}} className="btn rounded-pill w-100 shadow">{buttonloading?<ButtonLoader />:"Release"}</button>
                                 <br />
                                 <br />
                             </form>
