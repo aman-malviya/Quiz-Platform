@@ -17,6 +17,13 @@ export default function Register(){
     
     const handleClick=(e)=>{
         e.preventDefault()
+        if(password.length < 8){
+            setToast(<Toast msg="Password too small" />)
+            setTimeout(() => {
+                setToast(null)
+            }, 3000);
+            return;
+        }
         setloading(true)
         firebaseApp.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {

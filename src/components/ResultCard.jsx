@@ -37,7 +37,7 @@ export default function ResultCard(props){
 
     useEffect(()=>{
         firebaseApp.firestore().collection("Quizzes").doc(props.id).get().then(doc=>{
-            if(doc.data().resultsReleased){
+            if(doc.data() && doc.data().resultsReleased){
                 setresults(doc.data().resultsReleased)
                 let f=doc.data().winners.first;
                 let s=doc.data().winners.second;
@@ -77,7 +77,6 @@ export default function ResultCard(props){
                     College:doc.attendeeDetails.College,
                     City:doc.attendeeDetails.City,
                     State:doc.attendeeDetails.State,
-                    Country:doc.attendeeDetails.Country,
                     Score:doc.attendeeScore
                 })
             })
@@ -222,7 +221,7 @@ export default function ResultCard(props){
                     <br /><br /><br /><br />
                     <br /><br /><br /><br />
                     <div className="d-flex justify-content-center">
-                        {props.score?
+                        {props.status === "attended"?
                             <div>
                                 {results?
                                     <TopThree firstURL={firstURL} secondURL={secondURL} thirdURL={thirdURL} first={first} second={second} third={third} />

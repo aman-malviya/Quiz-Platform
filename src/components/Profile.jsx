@@ -7,6 +7,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Loader from './Loader';
 import ButtonLoader from './ButtonLoader';
+import {cities, states} from '../cities'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +34,6 @@ function Profile() {
     const [email, setemail] = useState("")
     const [mobile, setmobile] = useState("")
     const [college, setcollege] = useState("")
-    const [country, setcountry] = useState("")
     const [state, setstate] = useState("")
     const [city, setcity] = useState("")
     const [refetch, setrefetch] = useState(false)
@@ -49,7 +49,6 @@ function Profile() {
             setcollege(doc.data().college)
             setstate(doc.data().state)
             setcity(doc.data().city)
-            setcountry(doc.data().country)
             setphoto(doc.data().photoURL)
             let temp={
                 name:doc.data().firstName+" "+doc.data().lastName,
@@ -58,7 +57,6 @@ function Profile() {
                 mobile:doc.data().mobileNumber,
                 city:doc.data().city,
                 state:doc.data().state,
-                country:doc.data().country,
                 college:doc.data().college,
             }
             setcurrentUser(temp);
@@ -90,7 +88,6 @@ function Profile() {
             college:college,
             city:city,
             state:state,
-            country:country,
             completed:true
         }).then(()=>{
             if(img){
@@ -173,21 +170,13 @@ function Profile() {
                                     <input required value={college} onChange={(e)=>setcollege(e.target.value)} type="text" className="form-control border-0 py-2 px-4" placeholder="Enter the Name of Current College" />   
                                 </div>
                                 <br />
-                                <label><strong>Country where your college is located <span className="text-danger">*</span></strong></label>
-                                <div class="input-group my-2 shadow rounded-2">
-                                    <select required value={country} onChange={(e)=>setcountry(e.target.value)} class="form-select">
-                                        <option selected value="">Select a Country</option>
-                                        <option value="India">India</option>
-                                        <option value="USA">USA</option>
-                                    </select>   
-                                </div>
-                                <br />
                                 <label><strong>State where your college is located <span className="text-danger">*</span></strong></label>
                                 <div class="input-group my-2 shadow rounded-2">
                                     <select required value={state} onChange={(e)=>setstate(e.target.value)} class="form-select">
                                         <option selected value="">Select a State</option>
-                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                        <option value="Rajasthan">Rajasthan</option>
+                                        {states.map(s=>{
+                                            return <option value={s}>{s}</option>
+                                        })}
                                     </select>   
                                 </div>
                                 <br />
@@ -195,8 +184,9 @@ function Profile() {
                                 <div class="input-group my-2 shadow rounded-2">
                                     <select required value={city} onChange={(e)=>setcity(e.target.value)} class="form-select">
                                         <option selected value="">Select a City</option>
-                                        <option value="Bhopal">Bhopal</option>
-                                        <option value="Sehore">Sehore</option>
+                                        {cities.map(c=>{
+                                            return c.state === state ? <option value={c.name}>{c.name}</option> : null;
+                                        })}
                                     </select>   
                                 </div>
                                 <br />
@@ -228,12 +218,11 @@ function Profile() {
                             <h6>{currentUser.college}</h6>
                             <h6>{currentUser.city}</h6>
                             <h6>{currentUser.state}</h6>
-                            <h6>{currentUser.country}</h6>
                         </div>
                         :
                         <div>
                             <button onClick={handleOpen} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">Complete your profile</button>
-                            <p className="text-muted text-center mt-2">Complete your profile to find out amazing things</p>
+                            <p className="text-muted text-center mt-2">Complete your profile to discover some awesome stuff</p>
                         </div>
                     }
                 </div>

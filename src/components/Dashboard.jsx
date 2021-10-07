@@ -65,7 +65,7 @@ export default function Dashboard(props){
                     }
                     {quizzesAttended.map(quiz=>{
                         return <div className="col-lg-6">
-                            <ResultCard id={quiz.quizID} title={quiz.quizDetails.quizName} score={quiz.score} maxScore={quiz.quizDetails.noOfQues} banner={quiz.quizDetails.banner} />
+                            <ResultCard id={quiz.quizID} title={quiz.quizDetails.quizName} score={quiz.score} maxScore={quiz.quizDetails.noOfQues} banner={quiz.quizDetails.banner} status="attended" />
                         </div>
                     })}
                 </div>
@@ -84,7 +84,7 @@ export default function Dashboard(props){
                     }
                     {quizzesOrganized.map(quiz=>{
                         return <div className="col-lg-6">
-                            <ResultCard id={quiz[0]} title={quiz[1].quizName} banner={quiz[1].banner} />
+                            <ResultCard id={quiz[0]} title={quiz[1].quizName} banner={quiz[1].banner} status="organized" />
                         </div>
                     })}
                     </div>
