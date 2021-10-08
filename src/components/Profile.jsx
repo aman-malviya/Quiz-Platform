@@ -41,6 +41,7 @@ function Profile() {
     const [photo, setphoto] = useState("")
     const [loading, setloading] = useState(true)
     const [buttonloading, setbuttonloading] = useState(false)
+    const [profilecomplete, setprofilecomplete] = useState(false)
     useEffect(()=>{
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).get().then(doc=>{
             setname(doc.data().firstName+" "+doc.data().lastName)
@@ -50,6 +51,7 @@ function Profile() {
             setstate(doc.data().state)
             setcity(doc.data().city)
             setphoto(doc.data().photoURL)
+            setprofilecomplete(doc.data().completed)
             let temp={
                 name:doc.data().firstName+" "+doc.data().lastName,
                 email:doc.data().email,
@@ -94,6 +96,9 @@ function Profile() {
                 updateImage(img)
             }else{
                 setbuttonloading(false)
+                if(!profilecomplete){
+                    window.location.reload()
+                }
                 setrefetch(!refetch)
                 handleClose()
             }

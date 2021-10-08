@@ -1,7 +1,7 @@
 import firebase from "firebase";
 const firebaseApp = firebase.initializeApp({
   apiKey: "AIzaSyBsYSWWClIrW-wI7ItH1vplMxcchaezYQI",
-  authDomain: "edifyonline.live",
+  authDomain: "quiz-app-5505a.firebaseapp.com",
   projectId: "quiz-app-5505a",
   storageBucket: "quiz-app-5505a.appspot.com",
   messagingSenderId: "460190303790",

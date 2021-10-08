@@ -3,21 +3,29 @@ import {useState, useEffect} from 'react'
 import firebaseApp from '../firebase'
 import EventCard from './EventCard';
 import Loader from './Loader';
+import NothingHere from './NothingHere'
 
 
 export default function Events(){
 
-    const [quizzes,setQuizzes]=useState([]);
+    const [livequizzes, setlivequizzes] = useState([])
+    const [upcomingquizzes, setupcomingquizzes] = useState([])
     const [loading, setloading] = useState(true)
     
     useEffect(()=>{
-        firebaseApp.firestore().collection("Quizzes").onSnapshot(snapshot=>{
-            setQuizzes(
-                snapshot.docs.map(doc=>({
-                    doc:doc.data(),
-                    id:doc.id
-                }))
-            )
+        firebaseApp.firestore().collection("Quizzes").get().then(docs=>{
+            const currTime=new Date().getTime()
+            const live=[]
+            const upcoming=[]
+            docs.forEach(doc=>{
+                if(currTime > doc.data().timeStampStart && currTime < doc.data().timeStampEnd){
+                    live.push([doc.data(),doc.id])
+                }else if(currTime < doc.data().timeStampStart){
+                    upcoming.push([doc.data(), doc.id])
+                }
+            })
+            setlivequizzes(live)
+            setupcomingquizzes(upcoming)
             setloading(false)
         })
     }
@@ -30,24 +38,28 @@ export default function Events(){
         <br />
         <h5>Live Quizzes</h5>
         <div className="row">
-            {quizzes.map(quiz=>{
-                if(quiz.doc.timeStampStart > new Date().getTime() || quiz.doc.timeStampEnd < new Date().getTime()){
-                    return null;
-                }   
+            {!livequizzes.length?
+                <NothingHere />
+                :
+                <div></div>
+            }
+            {livequizzes.map(quiz=>{  
                 return <div className="col-lg-4">
-                    <EventCard id={quiz.id} title={quiz.doc.quizName} date={quiz.doc.date} duration={quiz.doc.timeDuration} start={quiz.doc.startTime} end={quiz.doc.endTime} noOfQues={quiz.doc.noOfQues} banner={quiz.doc.banner} />
+                    <EventCard id={quiz[1]} title={quiz[0].quizName} date={quiz[0].date} duration={quiz[0].timeDuration} start={quiz[0].startTime} end={quiz[0].endTime} noOfQues={quiz[0].noOfQues} banner={quiz[0].banner} />
                 </div>        
             })}
         </div>
         <br />
         <h5>Upcoming Quizzes</h5>
         <div className="row">
-            {quizzes.map(quiz=>{
-                if(quiz.doc.timeStampStart < new Date().getTime()){
-                    return null;
-                }   
+            {!upcomingquizzes.length?
+                <NothingHere />
+                :
+                <div></div>
+            }
+            {upcomingquizzes.map(quiz=>{ 
                 return <div className="col-lg-4">
-                    <EventCard id={quiz.id} title={quiz.doc.quizName} date={quiz.doc.date} duration={quiz.doc.timeDuration} start={quiz.doc.startTime} end={quiz.doc.endTime} noOfQues={quiz.doc.noOfQues} disabled="true" banner={quiz.doc.banner} />
+                    <EventCard id={quiz[1]} title={quiz[0].quizName} date={quiz[0].date} duration={quiz[0].timeDuration} start={quiz[0].startTime} end={quiz[0].endTime} noOfQues={quiz[0].noOfQues} disabled="true" banner={quiz[0].banner} />
                 </div>        
             })}
         </div>
