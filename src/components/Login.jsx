@@ -4,6 +4,7 @@ import firebaseApp, {googleProvider} from '../firebase'
 import {Redirect, useHistory} from 'react-router-dom'
 import { useAuth } from '../Contexts/AuthContext'
 import Toast from './Toast'
+import {Link} from 'react-router-dom'
 
 export default function Login(){
     const history=useHistory()
@@ -75,6 +76,11 @@ export default function Login(){
                     "Sign In"
                 }    
             </button>
+            <br />
+            <br />
+            <p>
+                <Link className="accent" to="/forgot-password">Forgot Password?</Link>
+            </p>
             <div className="d-flex mt-5 mb-4">
                 <div className="w-50 line"></div><p className="p-0 m-0 text-dark or px-1">or</p><div className="w-50 line"></div>
             </div>

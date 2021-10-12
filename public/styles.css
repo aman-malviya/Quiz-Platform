@@ -317,3 +317,32 @@ input::-webkit-inner-spin-button {
 .awesome-shadow-13{
   box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
 }
+
+.reset-password{
+  width: 30%;
+}
+@media (max-width:1250px){
+  .reset-password{
+    width:40%;
+  }
+}
+@media (max-width:950px){
+  .reset-password{
+    width:50%;
+  }
+}
+@media (max-width:750px){
+  .reset-password{
+    width:60%;
+  }
+}
+@media (max-width:550px){
+  .reset-password{
+    width:75%;
+  }
+}
+@media (max-width:350px){
+  .reset-password{
+    width:90%;
+  }
+}

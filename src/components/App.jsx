@@ -10,6 +10,8 @@ import Home from './Home'
 import { AuthProvider } from '../Contexts/AuthContext'
 import PrivateRoute from './PrivateRoute'
 import EditQuiz from './EditQuiz'
+import ForgotPassword from './ForgotPassword'
+import ResetPassword from './ResetPassword'
 
 export default function App(){
     return(
@@ -18,6 +20,8 @@ export default function App(){
                 <Switch>
                     <Route path='/register'><Register /></Route>
                     <Route path='/login' component={Login} />
+                    <Route path='/forgot-password' component={ForgotPassword} />
+                    <Route path='/reset-password' component={ResetPassword} />
                     <PrivateRoute path="/leader-board" component={LeaderBoard} />
                     <PrivateRoute path='/quiz/:id' component={Quiz} />
                     <PrivateRoute path='/score/:id' component={Score} />
