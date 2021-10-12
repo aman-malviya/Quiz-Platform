@@ -1,19 +1,31 @@
 import React, {useState} from 'react'
 import firebaseApp from '../firebase'
-import {useAuth} from '../Contexts/AuthContext'
+import {useHistory} from 'react-router-dom'
+import Toast from './Toast'
+import ButtonLoader from './ButtonLoader'
 
 function ForgotPassword() {
     const [buttonLoading, setbuttonLoading] = useState(false)
     const [toast, setToast]=useState()
     const [email,setEmail]=useState("");         //email
-    const {user}=useAuth()
+    const history=useHistory()
 
     const forgotPassword=(e)=>{
         e.preventDefault();
-        firebaseApp.auth().sendPasswordResetEmail(email, {url:'http://localhost:3000/login'}).then((res)=>{
-            console.log(res);
+        setbuttonLoading(true)
+        firebaseApp.auth().sendPasswordResetEmail(email, {url:'https://edifyonline.live/login'}).then((res)=>{
+            setToast(<Toast success="true" msg={"Email successfully sent. Check your inbox."} />)
+            setbuttonLoading(false)
+            setTimeout(() => {
+                setToast(null)
+                history.push("/login")
+            }, 3000);
         }).catch(err=>{
-            console.log(err.message);
+            setToast(<Toast msg={err.message} />)
+            setbuttonLoading(false)
+            setTimeout(() => {
+                setToast(null)
+            }, 3000);
         })
     }
     return (
@@ -27,7 +39,7 @@ function ForgotPassword() {
             <input className="text-center rounded-top form-control py-3 bg-transparent text-input shadow" type="email" value ={email} onChange={event=>setEmail(event.target.value)}  placeholder="Email Address" required />
             <button type="submit" className="rounded-bottom btn w-100 my-btn text-white py-2 shadow">
                 {buttonLoading?
-                    <div class="spinner-border text-light" role="status"></div>
+                    <ButtonLoader />
                     :
                     "Submit"
                 }    

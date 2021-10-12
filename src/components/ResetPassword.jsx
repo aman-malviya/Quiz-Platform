@@ -1,5 +1,9 @@
 import React, {useState} from 'react'
 import {useHistory} from 'react-router-dom'
+import firebaseApp from '../firebase'
+import {useLocation} from 'react-router-dom'
+import ButtonLoader from './ButtonLoader'
+import Toast from './Toast'
 
 function ResetPassword() {
     const [buttonLoading, setbuttonLoading] = useState(false)
@@ -7,10 +11,43 @@ function ResetPassword() {
     const [pwd1,setpwd1]=useState("");
     const [pwd2,setpwd2]=useState("");
     const history=useHistory()
+    const location=useLocation()
 
     const resetPassword=(e)=>{
         e.preventDefault();
-        history.push("/reset-password")
+        setbuttonLoading(true)
+        if(pwd1 !== pwd2){
+            setToast(<Toast msg="Passwords do not match" />)
+            setbuttonLoading(false)
+            setTimeout(() => {
+                setToast(null)
+            }, 3000);
+            return;
+        }
+        if(pwd1.length < 8){
+            setToast(<Toast msg="Password too small" />)
+            setbuttonLoading(false)
+            setTimeout(() => {
+                setToast(null)
+            }, 3000);
+            return;
+        }
+        const params=new URLSearchParams(location.search)
+        const oobcode = params.get('oobCode');
+        firebaseApp.auth().confirmPasswordReset(oobcode, pwd1).then(res=>{
+            setbuttonLoading(false)
+            setToast(<Toast msg="Password successfully reset." success="true" />)
+            setTimeout(() => {
+                setToast(null)
+                history.push("/login")
+            }, 3000);
+        }).catch(err=>{
+            setbuttonLoading(false)
+            setToast(<Toast msg={err.message} />)
+            setTimeout(() => {
+                setToast(null)
+            }, 3000);
+        })
     }
 
     return (
@@ -25,7 +62,7 @@ function ResetPassword() {
             <input className="text-center rounded-top form-control py-3 bg-transparent text-input shadow" type="password" value ={pwd2} onChange={event=>setpwd2(event.target.value)}  placeholder="Confirm New Password" required />
             <button type="submit" className="rounded-bottom btn w-100 my-btn text-white py-2 shadow">
                 {buttonLoading?
-                    <div class="spinner-border text-light" role="status"></div>
+                    <ButtonLoader />
                     :
                     "Change Password"
                 }    
