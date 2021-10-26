@@ -122,6 +122,14 @@ function Profile() {
             })
         })
     }
+    const verifyEmail=(e)=>{
+        e.preventDefault()
+        firebaseApp.auth().sendSignInLinkToEmail(email, {url:'http://localhost:3000/', handleCodeInApp:true}).then(()=>{
+            console.log("Sent");
+        }).catch(err=>{
+            console.log(err.message);
+        })
+    }
     return (loading?
         <Loader />
         :
@@ -227,6 +235,9 @@ function Profile() {
                         :
                         <div>
                             <button onClick={handleOpen} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">Complete your profile</button>
+                            <br />
+                            <br />
+                            <button onClick={verifyEmail} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">Verify Email</button>
                             <p className="text-muted text-center mt-2">Complete your profile to discover some awesome stuff</p>
                         </div>
                     }

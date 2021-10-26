@@ -21,7 +21,7 @@ export default function App(){
                     <Route path='/register'><Register /></Route>
                     <Route path='/login' component={Login} />
                     <Route path='/forgot-password' component={ForgotPassword} />
-                    <Route path='/reset-password' component={ResetPassword} />
+                    <Route path='/auth' component={ResetPassword} />
                     <PrivateRoute path="/leader-board" component={LeaderBoard} />
                     <PrivateRoute path='/quiz/:id' component={Quiz} />
                     <PrivateRoute path='/score/:id' component={Score} />
