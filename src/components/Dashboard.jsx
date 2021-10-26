@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
       width:window.innerWidth<700?"90vw":"50vw",
       overflow:"scroll",
       height:"90vh",
-      position:'relative'
     },
 }));
 
@@ -103,8 +102,7 @@ export default function Dashboard(props){
             name:currentUser.displayName,
             email:currentUser.email,
             request:request,
-            status:"",
-            adminmessage:""
+            status:"review"
         },{merge:true}).then(()=>{
             setrefetch(!refetch)
             setbuttonloading(false)
@@ -131,19 +129,17 @@ export default function Dashboard(props){
                 >
                     <Fade in={open}>
                         <div className={classes.paper}>
-                            <p style={{'position':'absolute','width':'200px', 'top':'45px','left':'-45px', 'transform':'rotate(-45deg)', 'backgroundColor':status?status === "accepted"?'#43aa8b':'#f94144':'#f48c06'}} className="py-0 my-0 text-center px-2 fs-6 text-white">{status?status === "accepted"?"Accepted":"Rejected":"Under Review"}</p>:<div></div>
-                            <form style={{'display':'flex', 'justifyContent':'space-between', 'flexDirection':'column', 'height':'100%'}} onSubmit={askPermissions}>
-                                <div style={{'flex':'1'}} className='d-flex justify-content-between w-100'>
+                            <form onSubmit={askPermissions}>
+                                <div className='d-flex justify-content-between w-100'>
                                     <h5 id="transition-modal-title" className="text-center w-100">Tell us what you want</h5>
                                     <i style={{'cursor':'pointer'}} onClick={handleClose} class="fal fa-times-circle text-muted fs-3"></i>
                                 </div>
-                                <div style={{'flex':'7'}} className="h-75">
-                                
+                                <br />
+                                <div class="input-group my-2 shadow rounded-2 position-relative">
+                                    <p style={{'fontSize':'0.8rem','position':'absolute','width':'150px', 'top':'30px','right':'-35px','zIndex':'5' ,'transform':'rotate(45deg)', 'backgroundColor':status?(status==="review"?'#f48c06':status === "accepted"?'#43aa8b':'#f94144'):""}} className="py-0 my-0 text-center px-2 text-white">{status?(status==="review"?"Under Review":status === "accepted"?"Accepted":"Rejected"):""}</p><div></div>
+                                    <textarea value={request} onChange={e=>setrequest(e.target.value)} rows="18" required type="text" className="form-control border-0 py-2 px-4" placeholder="Explain how you are planning to use this platform" />
                                 </div>
-                                <div style={{'flex':'1'}} class="input-group my-2 shadow rounded-2 d-flex h-25">
-                                    <textarea value={request} onChange={e=>setrequest(e.target.value)} rows="1" required type="text" className="form-control border-0 py-2 px-4" placeholder="Explain your organization and your quiz in brief" />   
-                                    <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:<img src="send.png" alt="Send" height="20px" />}</button>
-                                </div>
+                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:request?"Update":"Send"}</button>
                             </form>
                         </div>
                     </Fade>
