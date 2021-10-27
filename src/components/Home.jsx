@@ -83,7 +83,7 @@ function Home(props) {
   const {currentUser} =useAuth()
   const [option, setoption] = useState("dashboard")
   const [loading, setloading] = useState(true)
-  const [profile, setprofile] = useState(false)
+  const [verified, setverified] = useState(false)
   const [photo, setphoto] = useState("")
 
   const handleLogout=(e)=>{
@@ -125,8 +125,8 @@ function Home(props) {
       setTimeout(() => {
         firebaseApp.firestore().collection("Users").doc(currentUser.email).get().then(doc=>{
           setphoto(doc.data().photoURL)
-          if(doc.data().completed){
-            setprofile(true);
+          if(doc.data().completed && doc.data().verified){
+            setverified(true);
           }else{
             setoption("profile")
           }
@@ -146,8 +146,8 @@ function Home(props) {
             <h5 className="text-center mb-2">{currentUser.displayName}</h5>
             <p style={{'fontSize':'0.7rem'}} className="text-center mb-5 px-1">{currentUser.email}</p>
             <button onClick={toProfile} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="profile" class="fal fa-user-circle icon"></i> Profile</button>
-            {profile?<button onClick={toDashboard} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="dashboard" class="fas fa-th-large icon active-icon"></i> Dashboard</button>:null}
-            {profile?<button onClick={toEvents} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="events" class="fal fa-broadcast-tower icon"></i> Quizzes</button>:null}
+            {verified?<button onClick={toDashboard} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="dashboard" class="fas fa-th-large icon active-icon"></i> Dashboard</button>:null}
+            {verified?<button onClick={toEvents} className="btn d-block text-start w-100 rounded-0 my-3 p-0"><i id="events" class="fal fa-broadcast-tower icon"></i> Quizzes</button>:null}
             <button className="accent btn d-block w-100 rounded-0 my-3 text-start p-0" onClick={handleLogout}><i class="icon far fa-sign-out"></i> Logout</button>
         </div>
       </div>

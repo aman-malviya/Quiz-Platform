@@ -42,6 +42,9 @@ function Profile() {
     const [loading, setloading] = useState(true)
     const [buttonloading, setbuttonloading] = useState(false)
     const [profilecomplete, setprofilecomplete] = useState(false)
+    const [verified, setverified] = useState(false)
+    const [text, settext]=useState("Verify Email")
+
     useEffect(()=>{
         firebaseApp.firestore().collection("Users").doc(user.currentUser.email).get().then(doc=>{
             setname(doc.data().firstName+" "+doc.data().lastName)
@@ -52,6 +55,7 @@ function Profile() {
             setcity(doc.data().city)
             setphoto(doc.data().photoURL)
             setprofilecomplete(doc.data().completed)
+            setverified(doc.data().verified)
             let temp={
                 name:doc.data().firstName+" "+doc.data().lastName,
                 email:doc.data().email,
@@ -124,8 +128,8 @@ function Profile() {
     }
     const verifyEmail=(e)=>{
         e.preventDefault()
-        firebaseApp.auth().sendSignInLinkToEmail(email, {url:'http://localhost:3000/', handleCodeInApp:true}).then(()=>{
-            console.log("Sent");
+        firebaseApp.auth().sendSignInLinkToEmail(email, {url:'https://edifyonline.live/', handleCodeInApp:true}).then(()=>{
+            settext("Email Verification Sent")
         }).catch(err=>{
             console.log(err.message);
         })
@@ -225,7 +229,7 @@ function Profile() {
                         <br />
                         <br />
                     </div>
-                    {currentUser.completed?
+                    {profilecomplete && verified?
                         <div className="col-lg-6">
                             <p><strong>Education</strong></p>
                             <h6>{currentUser.college}</h6>
@@ -234,10 +238,10 @@ function Profile() {
                         </div>
                         :
                         <div>
-                            <button onClick={handleOpen} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">Complete your profile</button>
+                            <button onClick={handleOpen} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">{profilecomplete?<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="far fa-check-circle me-3"></i> Profile Completed</div>:<div>Complete your profile</div>}</button>
                             <br />
                             <br />
-                            <button onClick={verifyEmail} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">Verify Email</button>
+                            <button onClick={verifyEmail} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">{verified?<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="far fa-check-circle me-3"></i> Email Verified</div>:<div>{text}</div>}</button>
                             <p className="text-muted text-center mt-2">Complete your profile to discover some awesome stuff</p>
                         </div>
                     }

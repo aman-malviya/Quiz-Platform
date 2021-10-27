@@ -4,6 +4,7 @@ import firebaseApp from '../firebase'
 import {useLocation} from 'react-router-dom'
 import ButtonLoader from './ButtonLoader'
 import Toast from './Toast'
+import { useAuth } from '../Contexts/AuthContext'
 
 function ResetPassword() {
     const [buttonLoading, setbuttonLoading] = useState(false)
@@ -15,17 +16,29 @@ function ResetPassword() {
     const params=new URLSearchParams(location.search)
     const mode=params.get('mode');
     const [countdown, setcountdown] = useState(5)
+    const {currentUser}=useAuth()
+
     
     useEffect(()=>{
-        if(countdown === 0){
-            history.push("/");
-        }
         if(mode === 'signIn'){
-            setInterval(() => {
-                setcountdown(countdown-1);
-            }, 1000);
+            if(firebaseApp.auth().isSignInWithEmailLink(window.location.href)){
+                firebaseApp.firestore().collection("Users").doc(currentUser.email).update({
+                    verified:true
+                }).then(()=>{
+                    let timer=5;
+                    const interval = setInterval(() => {
+                        timer-=1;
+                        if(timer === 0){
+                            clearInterval(interval);
+                            history.push("/")
+                        }
+                        setcountdown(timer);
+                    }, 1000);
+                })
+            }
         }
-    },[countdown, history, mode])
+        // eslint-disable-next-line
+    },[])
 
     const resetPassword=(e)=>{
         e.preventDefault();
