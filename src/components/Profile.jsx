@@ -128,8 +128,9 @@ function Profile() {
     }
     const verifyEmail=(e)=>{
         e.preventDefault()
+        document.getElementById("verify-email").disabled=true;
         firebaseApp.auth().sendSignInLinkToEmail(email, {url:'https://edifyonline.live/', handleCodeInApp:true}).then(()=>{
-            settext("Email Verification Sent")
+            settext(<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="fal fa-envelope me-3"></i> Email Verification Sent!</div>)
         }).catch(err=>{
             console.log(err.message);
         })
@@ -241,7 +242,7 @@ function Profile() {
                             <button onClick={handleOpen} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">{profilecomplete?<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="far fa-check-circle me-3"></i> Profile Completed</div>:<div>Complete your profile</div>}</button>
                             <br />
                             <br />
-                            <button onClick={verifyEmail} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">{verified?<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="far fa-check-circle me-3"></i> Email Verified</div>:<div>{text}</div>}</button>
+                            <button id="verify-email" onClick={verifyEmail} style={{'border':'2px solid #0d1842', 'color':'#0d1842'}} className="bg-white px-4 py-2 rounded-pill w-100">{verified?<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="far fa-check-circle me-3"></i> Email Verified</div>:<div>{text}</div>}</button>
                             <p className="text-muted text-center mt-2">Complete your profile to discover some awesome stuff</p>
                         </div>
                     }
