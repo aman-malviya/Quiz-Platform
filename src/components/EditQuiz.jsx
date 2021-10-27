@@ -265,7 +265,7 @@ function EditQuiz() {
                                         <br />
                                         <label><strong>Quiz Banner</strong></label>
                                         <div class="input-group my-2 shadow rounded-2">
-                                            <input id="quiz-banner" type="file" className="form-control border-0 py-2 px-4" />   
+                                            <input id="quiz-banner" type="file" accept="image/*" className="form-control border-0 py-2 px-4" />   
                                         </div>
                                         <p className="text-muted p-0 m-0">Note: This image will replace your previous banner (if any).</p>
                                         <p className="text-muted">Suggestion: It's good to have a banner for your quiz. Banners attract the audience.</p>
@@ -310,7 +310,7 @@ function EditQuiz() {
                                         <br />
                                         <label><strong>Attach an image (optional)</strong></label>
                                         <div class="input-group my-2 shadow rounded-2">
-                                            <input id="question-image" type="file" className="form-control border-0 py-2 px-4" />   
+                                            <input id="question-image" type="file" accept="image/*" className="form-control border-0 py-2 px-4" />   
                                         </div>
                                         <p className="text-muted">Note: This image will replace your previous image (if any).</p>
                                         <br />

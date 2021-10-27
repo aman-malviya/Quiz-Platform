@@ -164,7 +164,7 @@ export default function Dashboard(props){
                 <div id="organized" className="p-3 rounded">
                     <div className="d-flex">
                         <h5 className="mb-4 py-0 text-dark me-4">Quizzes Organized</h5>
-                        <button onClick={newQuiz} style={{'height':'30px', 'backgroundColor':'#0d1842'}} className="btn text-white py-0 px-3 rounded-pill shadow">Host a Quiz</button>
+                        <button onClick={newQuiz} style={{'height':'30px', 'backgroundColor':'#0d1842','width':'110px'}} className="btn text-white py-0 px-1 rounded-pill shadow">Host a Quiz</button>
                     </div>
                     <div className="row no-gutters">
                     {!quizzesOrganized.length?

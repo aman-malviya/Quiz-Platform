@@ -174,7 +174,7 @@ function Profile() {
                                 <br />
                                 <label><strong>Profile Picture</strong></label>
                                 <div class="input-group my-2 shadow rounded-2">
-                                    <input id="image-input" type="file" className="form-control border-0 py-2 px-4" />   
+                                    <input id="image-input" type="file" accept="image/*" className="form-control border-0 py-2 px-4" />   
                                 </div>
                                 <p className="text-muted">Note: This image will replace your previous profile picture (if any).</p>
                                 <br />
