@@ -63,7 +63,6 @@ function EditQuiz() {
             setStartTime(doc.data().startTime);
             setEndTime(doc.data().endTime);
             setDate(doc.data().date);
-            setNoOfQues(doc.data().noOfQues);
             setTime(doc.data().timeDuration);
 
             firebaseApp.firestore().collection("Quizzes").doc(id).collection("Questions").onSnapshot(snap=>{
@@ -84,11 +83,15 @@ function EditQuiz() {
                     return a.Question.length - b.Question.length;
                 })
                 setNoOfQues(temp.length)
-                setQuestions(temp);
-                setloading(false)
+                firebaseApp.firestore().collection("Quizzes").update({
+                    noOfQues:noOfQues
+                }).then(()=>{
+                    setQuestions(temp);
+                    setloading(false);
+                })
             })
         })
-    }, [refetch, id])
+    }, [refetch, id, noOfQues])
 
     //Modal
     const classes = useStyles();
