@@ -26,7 +26,6 @@ function Quiz() {
                 College:doc.data().college,
                 City:doc.data().city,
                 State:doc.data().state,
-                Country:doc.data().country,
                 Image:doc.data().photoURL
             }
             setattendee(temp)
