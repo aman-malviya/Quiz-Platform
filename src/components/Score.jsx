@@ -44,7 +44,7 @@ export default function Score(){
                 <div className="py-2 rounded shadow my-border">
                     <h4 className="text-center">{result.score}</h4>
                 </div>
-                <p className="p-0 m-0 mb-4">out of {quiz.noOfQues}</p>
+                <p className="p-0 m-0 mb-4">out of {quiz.noOfQues*quiz.positive}</p>
                 <button onClick={e=>history.push("/")} className="my-btn btn mx-auto shadow text-white rounded my-3">Complete</button>
             </div>
         </div>

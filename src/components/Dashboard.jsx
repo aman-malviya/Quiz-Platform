@@ -139,7 +139,7 @@ export default function Dashboard(props){
                                     <p style={{'fontSize':'0.8rem','position':'absolute','width':'150px', 'top':'30px','right':'-35px','zIndex':'5' ,'transform':'rotate(45deg)', 'backgroundColor':status?(status==="review"?'#f48c06':status === "accepted"?'#43aa8b':'#f94144'):""}} className="py-0 my-0 text-center px-2 text-white">{status?(status==="review"?"Under Review":status === "accepted"?"Accepted":"Rejected"):""}</p><div></div>
                                     <textarea value={request} onChange={e=>setrequest(e.target.value)} rows="18" required type="text" className="form-control border-0 py-2 px-4" placeholder="Explain how you are planning to use this platform" />
                                 </div>
-                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:request !== ""?"Update":"Send"}</button>
+                                <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Request"}</button>
                             </form>
                         </div>
                     </Fade>

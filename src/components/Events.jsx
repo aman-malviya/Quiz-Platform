@@ -18,10 +18,12 @@ export default function Events(){
             const live=[]
             const upcoming=[]
             docs.forEach(doc=>{
-                if(currTime > doc.data().timeStampStart && currTime < doc.data().timeStampEnd){
-                    live.push([doc.data(),doc.id])
-                }else if(currTime < doc.data().timeStampStart){
-                    upcoming.push([doc.data(), doc.id])
+                if(doc.data().published){
+                    if(currTime > doc.data().timeStampStart && currTime < doc.data().timeStampEnd){
+                        live.push([doc.data(),doc.id])
+                    }else if(currTime < doc.data().timeStampStart){
+                        upcoming.push([doc.data(), doc.id])
+                    }
                 }
             })
             setlivequizzes(live)

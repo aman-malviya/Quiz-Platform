@@ -45,6 +45,8 @@ function EditQuiz() {
     const [flag, setflag] = useState(true)
     const [refetch, setrefetch] = useState(true)
     const [index, setindex] = useState(0)
+    const [positive, setPositive]=useState(0)
+    const [negative, setNegative]=useState(0)
     //Edit Questions
     const [question,setQuestion] = useState("");
     const [a,setA] = useState("");
@@ -52,6 +54,7 @@ function EditQuiz() {
     const [c,setC] = useState("");
     const [d,setD] = useState("");
     const [ans,setAns] = useState("");
+    const [published, setPublished]=useState(false)
     // const [toast, setToast]=useState("");
 
 
@@ -64,6 +67,9 @@ function EditQuiz() {
             setEndTime(doc.data().endTime);
             setDate(doc.data().date);
             setTime(doc.data().timeDuration);
+            setPublished(doc.data().published)
+            setPositive(doc.data().positive)
+            setNegative(doc.data().negative)
 
             firebaseApp.firestore().collection("Quizzes").doc(id).collection("Questions").onSnapshot(snap=>{
                 let temp=[];
@@ -83,7 +89,7 @@ function EditQuiz() {
                     return a.Question.length - b.Question.length;
                 })
                 setNoOfQues(temp.length)
-                firebaseApp.firestore().collection("Quizzes").update({
+                firebaseApp.firestore().collection("Quizzes").doc(id).update({
                     noOfQues:noOfQues
                 }).then(()=>{
                     setQuestions(temp);
@@ -141,7 +147,10 @@ function EditQuiz() {
             noOfQues:noOfQues,
             timeStampStart:new Date(year, month-1, day, startHours, startMinutes, 0, 0).getTime(),
             timeStampEnd:new Date(year, month-1, day, endHours, endMinutes, 0, 0).getTime(),
-            timeDuration:time
+            timeDuration:time,
+            published:false,
+            positive:positive,
+            negative:negative
         }).then(()=>{
             if(img){
                 updateQuizBanner(img)
@@ -151,7 +160,6 @@ function EditQuiz() {
                 handleClose()
             }
         })
-
     }
     const saveQuestion=(e)=>{
         e.preventDefault();
@@ -233,6 +241,15 @@ function EditQuiz() {
             setrefetch(!refetch)
         })
     }
+    const publish=(e)=>{
+        e.preventDefault();
+        firebaseApp.firestore().collection("Quizzes").doc(id).update({
+            published:!published
+        }).then(()=>{
+            setPublished(!published);
+            console.log("done");
+        })
+    }
     return (loading?
         <Loader />
         :
@@ -291,6 +308,16 @@ function EditQuiz() {
                                         <label><strong>Duration (in minutes) <span className="text-danger">*</span></strong></label>
                                         <div class="input-group my-2 shadow rounded-2">
                                             <input required value={time} onChange={(e)=>setTime(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Duration of the Quiz" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Points per question <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={positive} min="1" onChange={(e)=>setPositive(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Marking" />   
+                                        </div>
+                                        <br />
+                                        <label><strong>Negative Points <span className="text-danger">*</span></strong></label>
+                                        <div class="input-group my-2 shadow rounded-2">
+                                            <input required value={negative} onChange={(e)=>setNegative(e.target.value)} type="number" className="form-control border-0 py-2 px-4" placeholder="Negative Marking" />   
                                         </div>
                                         <br />
                                         <button type="submit" style={{'backgroundColor':'#0d1842', 'color':'#fff'}} className="btn shadow py-2 px-4">{buttonloading?<ButtonLoader />:"Save"}</button>
@@ -356,11 +383,12 @@ function EditQuiz() {
                         </div>
                     </Fade>
             </Modal>
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center justify-content-between">
                 <div className="shadow-lg rounded-pill d-inline py-2 px-3 d-flex">
                     <Link to="/"><i class="far fa-arrow-left fs-4"></i></Link>
                     <h5 className="m-0 p-0 px-5">{quizName}</h5>
                 </div>
+                <button style={{'backgroundColor':published?"#e63946":"#0d1842"}} className="btn rounded-pill box-shadow-card px-5 py-2 text-white" onClick={publish}>{published?"Unpublish":"Publish"}</button>
             </div>
             <br />
             <br />
@@ -387,13 +415,19 @@ function EditQuiz() {
                                 <br />
                                 <p><strong>Time</strong></p>
                                 <h6>{startTime} to {endTime}</h6>
-                            </div>
-                            <div className="col-lg-6">
+                                <br />
                                 <p><strong>Duration</strong></p>
                                 <h6>{time} minutes</h6>
-                                <br />
+                            </div>
+                            <div className="col-lg-6">
                                 <p><strong>Number of Questions</strong></p>
                                 <h6>{noOfQues}</h6>
+                                <br />
+                                <p><strong>Marking</strong></p>
+                                <h6>{positive}</h6>
+                                <br />
+                                <p><strong>Negative Marking</strong></p>
+                                <h6>{negative}</h6>
                             </div>
                         </div>
                     </div>

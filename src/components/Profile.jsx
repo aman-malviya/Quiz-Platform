@@ -217,7 +217,7 @@ function Profile() {
             <div className="bg-white p-5 rounded-3 box-shadow-card position-relative">
                 <i onClick={handleOpen} class="fal fa-pen fs-5 edit-icon p-5"></i>
                 <div style={{'height':'120px', 'width':'120px'}}>
-                    <img alt="Profile" style={{'objectFit':'cover'}} className="rounded-circle mb-4 box-shadow-card w-100 h-100" src={photo?photo:"man.png"} />         
+                    <img alt="Profile" style={{'objectFit':'cover'}} className="rounded-circle mb-4 box-shadow-card w-100 h-100" src={photo === ""?"man.png":photo} />         
                 </div>
                 <h2 className="profile-name">{currentUser.name}</h2>
                 <br />

@@ -96,19 +96,24 @@ function Quiz() {
         let score=0;
 
         for(let i=0; i<totalQues; i++){
+            if(response[i] === "")continue;
             if(questions[i].ans === response[i]){
-                score++;
+                score+=currentQuiz.positive;
+            }else{
+                score-=currentQuiz.negative;
             }
         }
 
         firebaseApp.firestore().collection("Users/"+currentUser.email+"/AttendedQuizzes").add({
             score:score,
             quizID:id,
-            quizDetails:currentQuiz
+            quizDetails:currentQuiz,
+            time:new Date()
           }).then((docRef)=>{
               firebaseApp.firestore().collection("Quizzes/"+id+"/Attendees").add({
                 attendeeDetails:attendee,
                 attendeeScore:score,
+                time:new Date()
               }).then(()=>{
                   history.push("/score/"+docRef.id);
                   setloading(false);

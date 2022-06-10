@@ -63,7 +63,7 @@ export default function Login(){
         <div className="row g-0 min-vh-100">
         <div className="col-lg-4 col-md-5 p-5">
             <div className="d-flex justify-content-center">
-                <img src="edify.png" height="90px" width="90px" alt="Edify" className="awesome-shadow-13 rounded-circle" />        
+                <img src="/edify.png" height="90px" width="90px" alt="Edify" className="awesome-shadow-13 rounded-circle" />        
             </div>
             <h3 className="text-dark my-5 text-center">Welcome Back !</h3>
             <span>{toast}</span>
