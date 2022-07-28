@@ -13,7 +13,7 @@ function ForgotPassword() {
     const forgotPassword=(e)=>{
         e.preventDefault();
         setbuttonLoading(true)
-        firebaseApp.auth().sendPasswordResetEmail(email, {url:'https://edifyonline.live/login'}).then((res)=>{
+        firebaseApp.auth().sendPasswordResetEmail(email, {url:'https://edify.amanmalviya.site/login'}).then((res)=>{
             setToast(<Toast success="true" msg={"Email successfully sent. Check your inbox."} />)
             setbuttonLoading(false)
             setTimeout(() => {

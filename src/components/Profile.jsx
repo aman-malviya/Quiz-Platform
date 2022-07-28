@@ -129,7 +129,7 @@ function Profile() {
     const verifyEmail=(e)=>{
         e.preventDefault()
         document.getElementById("verify-email").disabled=true;
-        firebaseApp.auth().sendSignInLinkToEmail(email, {url:'https://edifyonline.live/', handleCodeInApp:true}).then(()=>{
+        firebaseApp.auth().sendSignInLinkToEmail(email, {url:'https://edify.amanmalviya.site/', handleCodeInApp:true}).then(()=>{
             settext(<div className="d-flex align-items-center justify-content-center"><i style={{'color':'#4bb543', 'fontSize':'1.8rem'}} class="fal fa-envelope me-3"></i> Email Verification Sent!</div>)
         }).catch(err=>{
             console.log(err.message);
